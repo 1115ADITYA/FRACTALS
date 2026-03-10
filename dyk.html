@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#04060d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Did You Know? — Hidden Mathematics Behind Movies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════
+       ROOT & RESET
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #04060d;
+      --bg2:         #070b15;
+      --gold:        #d4af37;
+      --gold2:       #f0cf6e;
+      --cyan:        #00e5ff;
+      --purple:      #7b2fff;
+      --text:        #e8e0cc;
+      --muted:       #5a5244;
+      --border:      rgba(212,175,55,0.18);
+      --font-serif:  'Cormorant Garamond', Georgia, serif;
+      --font-sans:   'Rajdhani', 'Trebuchet MS', sans-serif;
+      --font-mono:   'DM Mono', 'Courier New', monospace;
+    }
+
+    html { 
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* ═══════════════════════════════════════════════
+       CANVAS BACKGROUND
+    ═══════════════════════════════════════════════ */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+      will-change: opacity;
+    }
+    
+    @media (max-width: 768px) {
+      #bg-canvas { opacity: 0.35; }
+    }
+    
+    @media (max-height: 600px) {
+      #bg-canvas { opacity: 0.25; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       PAGE WRAPPER
+    ═══════════════════════════════════════════════ */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(60px, calc(60px + env(safe-area-inset-bottom)));
+    }
+
+    /* ═══════════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════════ */
+    .hero {
+      padding: 72px 0 56px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      opacity: 0.75;
+      margin-bottom: 22px;
+      display: block;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(3.2rem, 13vw, 5.5rem);
+      font-weight: 700;
+      line-height: 0.95;
+      color: var(--gold);
+      text-shadow:
+        0 0 40px rgba(212,175,55,0.4),
+        0 0 100px rgba(212,175,55,0.15);
+      animation: fadeDown 0.9s 0.1s ease both;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold2);
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-serif);
+      font-size: clamp(1rem, 4vw, 1.35rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      opacity: 0.7;
+      margin: 14px 0 0;
+      letter-spacing: 0.06em;
+      animation: fadeDown 1s 0.2s ease both;
+    }
+
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 36px auto;
+      max-width: 340px;
+      animation: fadeDown 1s 0.3s ease both;
+    }
+    .hero-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+    .hero-divider-diamond {
+      width: 7px; height: 7px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    .hero-description {
+      font-family: var(--font-sans);
+      font-size: clamp(0.92rem, 3.5vw, 1.05rem);
+      font-weight: 300;
+      line-height: 1.78;
+      color: var(--text);
+      opacity: 0.75;
+      max-width: 520px;
+      margin: 0 auto;
+      animation: fadeDown 1s 0.4s ease both;
+    }
+
+    .hero-description strong {
+      color: var(--gold2);
+      font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════════
+       STATS ROW
+    ═══════════════════════════════════════════════ */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 40px 0 52px;
+      animation: fadeDown 1s 0.5s ease both;
+    }
+    .stat-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 18px 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(212,175,55,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .stat-box:hover {
+      border-color: rgba(212,175,55,0.45);
+      transform: translateY(-2px);
+    }
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(212,175,55,0.3);
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 7px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SECTION HEADER
+    ═══════════════════════════════════════════════ */
+    .section-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--purple);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 6vw, 2.4rem);
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    /* ═══════════════════════════════════════════════
+       FACT CARD
+    ═══════════════════════════════════════════════ */
+    .fact-card {
+      position: relative;
+      background: linear-gradient(145deg, #080d1c 0%, #060911 100%);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 44px 40px 36px;
+      margin-bottom: 28px;
+      overflow: hidden;
+      transition: box-shadow 0.4s;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .fact-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--cyan), var(--gold), transparent);
+      opacity: 0.6;
+    }
+    .fact-card::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(123,47,255,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Corner accents */
+    .card-corner {
+      position: absolute;
+      width: 16px; height: 16px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.35;
+      transition: opacity 0.3s, width 0.3s, height 0.3s;
+    }
+    .fact-card:hover .card-corner { opacity: 0.75; width: 20px; height: 20px; }
+    .card-corner.tl { top: 10px; left: 10px;  border-width: 1px 0 0 1px; }
+    .card-corner.tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
+    .card-corner.bl { bottom: 10px; left: 10px;  border-width: 0 0 1px 1px; }
+    .card-corner.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+    .card-glow {
+      position: absolute;
+      top: -40px; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 120px;
+      background: radial-gradient(ellipse, rgba(212,175,55,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      border-radius: 50%;
+      transition: opacity 0.4s;
+    }
+    .fact-card:hover .card-glow { opacity: 2; }
+
+    .fact-card-body { position: relative; z-index: 1; }
+
+    .fact-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 5px 13px;
+      border-radius: 2px;
+      margin-bottom: 22px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.25);
+      color: var(--gold);
+      transition: background 0.35s, border-color 0.35s, color 0.35s;
+    }
+    .fact-tag .tag-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .fact-text {
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 4vw, 1.35rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.75;
+      color: var(--text);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .fact-text.out {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .fact-text.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fact-footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(212,175,55,0.1);
+    }
+    .fact-counter {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+    .fact-counter span {
+      color: var(--gold);
+      font-size: 0.95rem;
+    }
+    .fact-progress-bar {
+      flex: 1;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 1px;
+      margin: 0 16px;
+      overflow: hidden;
+    }
+    .fact-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--cyan));
+      border-radius: 1px;
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ═══════════════════════════════════════════════
+       BUTTON
+    ═══════════════════════════════════════════════ */
+    .btn-discover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      padding: 20px 32px;
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.35s, border-color 0.35s, box-shadow 0.35s;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-discover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+      z-index: 0;
+    }
+    .btn-discover:hover::before,
+    .btn-discover:focus::before { transform: scaleX(1); }
+    .btn-discover:hover,
+    .btn-discover:focus {
+      color: #04060d;
+      border-color: var(--gold2);
+      box-shadow: 0 0 40px rgba(212,175,55,0.35), 0 0 80px rgba(212,175,55,0.12);
+    }
+    .btn-discover:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+    .btn-discover:active { transform: scale(0.97); }
+
+    .btn-text, .btn-icon { position: relative; z-index: 1; }
+
+    .btn-icon {
+      width: 22px; height: 22px;
+      border: 1.5px solid currentColor;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      transition: transform 0.5s ease, border-color 0.35s;
+      flex-shrink: 0;
+    }
+    .btn-discover:hover .btn-icon { transform: rotate(180deg); }
+
+    /* Shimmer */
+    .btn-shimmer {
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+      transform: skewX(-18deg);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .btn-discover:hover .btn-shimmer {
+      animation: shimmer 0.6s ease forwards;
+    }
+    @keyframes shimmer {
+      0%   { left: -100%; }
+      100% { left: 140%; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       CATEGORIES LEGEND
+    ═══════════════════════════════════════════════ */
+    .categories {
+      margin: 52px 0 0;
+    }
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .cat-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg2);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 4px;
+      padding: 11px 15px;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      opacity: 0.7;
+      transition: opacity 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    .cat-pill:hover { opacity: 1; border-color: var(--border); transform: translateX(3px); }
+    .cat-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════ */
+    .footer {
+      margin-top: 72px;
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-phi {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      color: var(--gold);
+      opacity: 0.2;
+      display: block;
+      margin-bottom: 14px;
+    }
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .footer-text em {
+      color: rgba(212,175,55,0.5);
+      font-style: normal;
+    }
+
+    /* ═══════════════════════════════════════════════
+       KEYFRAMES
+    ═══════════════════════════════════════════════ */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(212,175,55,0.15); }
+      50%       { box-shadow: 0 0 40px rgba(212,175,55,0.35), 0 0 80px rgba(212,175,55,0.1); }
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════ */
+    
+    /* Small phones (320px - 480px) */
+    @media (max-width: 480px) {
+      .page { padding: 0 16px 40px; max-width: 100%; }
+      .hero { padding: 48px 0 36px; }
+      .hero-eyebrow { font-size: 0.58rem; margin-bottom: 18px; }
+      .hero-title { font-size: clamp(2.4rem, 11vw, 5.5rem); line-height: 0.9; }
+      .hero-subtitle { font-size: clamp(0.85rem, 3vw, 1.35rem); margin-top: 10px; }
+      .hero-description { font-size: clamp(0.82rem, 2.8vw, 1.05rem); line-height: 1.65; max-width: 100%; }
+      
+      .stats { gap: 6px; margin: 32px 0 40px; }
+      .stat-box { padding: 14px 8px; border-radius: 3px; }
+      .stat-num { font-size: 1.4rem; }
+      .stat-label { font-size: 0.55rem; margin-top: 5px; }
+      
+      .section-header { margin-bottom: 24px; }
+      .section-label { font-size: 0.55rem; margin-bottom: 8px; }
+      .section-title { font-size: clamp(1.3rem, 5vw, 2.4rem); }
+      
+      .fact-card { padding: 28px 18px 22px; margin-bottom: 20px; min-height: 200px; }
+      .fact-tag { font-size: 0.55rem; padding: 5px 11px; margin-bottom: 16px; }
+      .fact-text { font-size: clamp(0.95rem, 3.5vw, 1.35rem); line-height: 1.65; }
+      .fact-footer { margin-top: 18px; padding-top: 14px; gap: 8px; }
+      .fact-counter { font-size: 0.62rem; }
+      .fact-counter span { font-size: 0.75rem; }
+      
+      .btn-discover { padding: 16px 20px; font-size: 0.8rem; letter-spacing: 0.22em; gap: 10px; }
+      .btn-icon { width: 20px; height: 20px; font-size: 0.75rem; border-width: 1.2px; }
+      
+      .categories { margin-top: 40px; }
+      .categories-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 16px; }
+      .cat-pill { padding: 10px 12px; font-size: 0.7rem; gap: 8px; }
+      
+      .footer { margin-top: 48px; padding: 20px 0; }
+      .footer-phi { font-size: 1.6rem; margin-bottom: 10px; }
+      .footer-text { font-size: 0.54rem; line-height: 1.6; }
+      
+      .hero-divider { margin: 24px auto; max-width: 100%; }
+    }
+    
+    /* Larger phones (481px - 640px) */
+    @media (min-width: 481px) and (max-width: 640px) {
+      .page { padding: 0 18px 50px; }
+      .hero { padding: 56px 0 44px; }
+      .hero-title { font-size: clamp(2.8rem, 12vw, 5.5rem); }
+      .hero-description { font-size: clamp(0.88rem, 3vw, 1.05rem); }
+      
+      .stats { gap: 8px; margin: 36px 0 44px; }
+      .stat-num { font-size: 1.6rem; }
+      
+      .fact-card { padding: 32px 24px 28px; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    /* Tablets (641px - 768px) */
+    @media (min-width: 641px) and (max-width: 768px) {
+      .page { padding: 0 24px 60px; max-width: 700px; }
+      .hero { padding: 64px 0 48px; }
+      
+      .stats { gap: 10px; }
+      .fact-card { padding: 40px 32px 32px; margin-bottom: 24px; }
+      
+      .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .cat-pill { padding: 12px 16px; font-size: 0.82rem; }
+    }
+    
+    /* Small laptops / larger tablets (769px - 1024px) */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .page { padding: 0 28px 70px; max-width: 740px; }
+      .hero { padding: 72px 0 56px; }
+      
+      .stats { grid-template-columns: repeat(3, 1fr); }
+      .fact-card { padding: 44px 40px 36px; min-height: 260px; }
+      
+      .categories-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    
+    /* Standard desktop (1025px and above) */
+    @media (min-width: 1025px) {
+      .page { padding: 0 40px 80px; max-width: 760px; }
+      .hero { padding: 80px 0 64px; }
+      
+      .fact-card { min-height: 280px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+      .fact-card:hover { transform: translateY(-4px); box-shadow: 0 0 50px rgba(212,175,55,0.25); }
+      
+      .categories-grid { grid-template-columns: repeat(4, 1fr); }
+      .cat-pill { transition: all 0.3s ease; }
+      .cat-pill:hover { background: var(--bg); }
+    }
+    
+    /* Extra large screens (1400px+) */
+    @media (min-width: 1400px) {
+      .page { max-width: 800px; padding: 0 60px 100px; }
+      .hero { padding: 100px 0 80px; }
+      .hero-title { font-size: clamp(4rem, 8vw, 6rem); }
+      .section-title { font-size: clamp(2rem, 4vw, 2.8rem); }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      button, .btn-discover { min-height: 48px; min-width: 48px; }
+      .cat-pill { padding: 13px 16px; }
+      .stat-box { padding: 20px 12px; }
+    }
+    
+    /* Landscape orientation (small height) */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .hero { padding: 30px 0 20px; }
+      .hero-divider { margin: 16px auto; }
+      .stats { margin: 20px 0 28px; }
+      .section-header { margin-bottom: 16px; }
+    }
+    
+    /* High resolution displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      body { -webkit-font-smoothing: subpixel-antialiased; }
+    }
+    
+    /* Print styles */
+    @media print {
+      .page { max-width: 100%; }
+      .btn-discover, .btn-shimmer { display: none; }
+      #bg-canvas { display: none; }
+    }
+    
+    /* Reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+    
+    /* Improved contrast for high contrast mode */
+    @media (prefers-contrast: more) {
+      :root {
+        --gold: #e6c200;
+        --cyan: #00ffff;
+      }
+      .btn-discover {
+        font-weight: 700;
+      }
+    }
+    
+    /* Dark mode (already dark theme, so minimal changes) */
+    @media (prefers-color-scheme: dark) {
+      #bg-canvas { opacity: 0.65; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Animated background canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="page">
+
+    <!-- ════════════════════ HERO ════════════════════ -->
+    <header class="hero">
+      <span class="hero-eyebrow">◆ School Science Exhibition ◆</span>
+      <h1 class="hero-title">Did You<br><em>Know?</em></h1>
+      <p class="hero-subtitle">Hidden Mathematics Behind Movies</p>
+
+      <div class="hero-divider">
+        <div class="hero-divider-line"></div>
+        <div class="hero-divider-diamond"></div>
+        <div class="hero-divider-line"></div>
+      </div>
+
+      <p class="hero-description">
+        Every breathtaking movie landscape, every impossibly perfect CGI creature,
+        every spiral galaxy on screen — all are expressions of hidden mathematics.
+        <strong>Fractals, Fibonacci numbers</strong> and the
+        <strong>Golden Ratio (φ ≈ 1.618)</strong> quietly govern nature,
+        cinema, visual effects, and the cosmos itself.
+      </p>
+    </header>
+
+    <!-- ════════════════════ STATS ════════════════════ -->
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-num">φ</div>
+        <div class="stat-label">Golden Ratio</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">35+</div>
+        <div class="stat-label">Facts to Discover</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Fractal Depth</div>
+      </div>
+    </div>
+
+    <!-- ════════════════════ FACT GENERATOR ════════════════════ -->
+    <section>
+      <div class="section-header">
+        <span class="section-label">⬡ Interactive Explorer</span>
+        <h2 class="section-title">Discover a Mathematical Fact</h2>
+      </div>
+
+      <!-- Fact Card -->
+      <div class="fact-card" id="factCard">
+        <div class="card-glow"></div>
+        <div class="card-corner tl"></div>
+        <div class="card-corner tr"></div>
+        <div class="card-corner bl"></div>
+        <div class="card-corner br"></div>
+
+        <div class="fact-card-body">
+          <div class="fact-tag" id="factTag">
+            <span class="tag-dot"></span>
+            <span id="factTagText">Ready</span>
+          </div>
+          <p class="fact-text in" id="factText">
+            Tap the button below to reveal your first mathematical fact. Each click uncovers a new secret hidden in the universe of numbers and cinema.
+          </p>
+        </div>
+
+        <div class="fact-footer">
+          <div class="fact-counter">
+            <span id="factNum">0</span> / <span id="factTotal">35</span>
+          </div>
+          <div class="fact-progress-bar">
+            <div class="fact-progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+          <div class="fact-counter" id="factSeen" style="text-align:right">seen: <span>0</span></div>
+        </div>
+      </div>
+
+      <!-- Button -->
+      <button class="btn-discover" id="discoverBtn" onclick="showFact()">
+        <span class="btn-shimmer"></span>
+        <span class="btn-icon">✦</span>
+        <span class="btn-text">Discover a New Fact</span>
+      </button>
+    </section>
+
+    <!-- ════════════════════ CATEGORIES ════════════════════ -->
+    <section class="categories">
+      <div class="section-header">
+        <span class="section-label">⬡ Topics Covered</span>
+        <h2 class="section-title">What You'll Explore</h2>
+      </div>
+      <div class="categories-grid">
+        <div class="cat-pill"><span class="cat-dot" style="background:#4caf7d"></span>Fractals in Nature</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#00e5ff"></span>Fractals in Movies</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#d4af37"></span>The Golden Ratio</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#f0cf6e"></span>Fibonacci Sequence</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#7b2fff"></span>Mathematics in Cinema</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#ff6b6b"></span>CGI & Visual Effects</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#ff9f43"></span>Mathematics in VFX</div>
+        <div class="cat-pill"><span class="cat-dot" style="background:#a8e6cf"></span>Space & Astronomy</div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ FOOTER ════════════════════ -->
+    <footer class="footer">
+      <span class="footer-phi">φ</span>
+      <div class="footer-text">
+        Created for a<br>
+        <em>Mathematics &amp; Cinema Exhibition Project</em><br>
+        Where numbers meet the silver screen.
+      </div>
+    </footer>
+
+  </div><!-- /page -->
+
+  <script>
+    /* ════════════════════════════════════════════════
+       FACT DATA — 36 facts across 8 categories
+    ════════════════════════════════════════════════ */
+    const FACTS = [
+      // ─── Fractals in Nature ───
+      {
+        cat: "Fractals in Nature",
+        col: "#4caf7d",
+        text: "A fern leaf is a natural fractal — each tiny leaflet is an almost perfect miniature copy of the whole fern. This self-similar pattern repeats down to the microscopic scale, created by a single simple DNA instruction."
+      },
+      {
+        cat: "Fractals in Nature",
+        col: "#4caf7d",
+        text: "Snowflakes are fractals: each arm grows the same branching pattern at smaller and smaller scales. Despite sharing the same mathematical rule, no two snowflakes are ever identical because tiny temperature differences alter each branch."
+      },
+      {
+        cat: "Fractals in Nature",
+        col: "#4caf7d",
+        text: "Coastlines are fractals. The more precisely you measure a coastline, the longer it gets — because at every scale you discover more tiny bays and peninsulas. This is called the Coastline Paradox, discovered by mathematician Benoit Mandelbrot."
+      },
+      {
+        cat: "Fractals in Nature",
+        col: "#4caf7d",
+        text: "The human lung contains around 300 million tiny air sacs called alveoli. The bronchial tree that delivers air branches in a fractal pattern across 23 generations, maximising surface area (the size of a tennis court!) inside a tiny chest."
+      },
+      {
+        cat: "Fractals in Nature",
+        col: "#4caf7d",
+        text: "Lightning bolts are natural fractals. The jagged branching pattern of a lightning strike repeats at smaller and smaller scales — and follows the same mathematical rules as river deltas, tree roots, and blood vessels."
+      },
+      {
+        cat: "Fractals in Nature",
+        col: "#4caf7d",
+        text: "Romanesco broccoli is the world's most visible fractal vegetable. Each tiny floret is a perfect miniature copy of the whole head, and the spirals follow consecutive Fibonacci numbers — making it simultaneously a fractal and a Fibonacci object."
+      },
+
+      // ─── Fractals in Movies ───
+      {
+        cat: "Fractals in Movies",
+        col: "#00e5ff",
+        text: "Industrial Light & Magic pioneered fractal terrain generation for the 'Genesis Planet' sequence in Star Trek II: The Wrath of Khan (1982) — making it the very first entirely computer-generated sequence to appear in a major Hollywood film."
+      },
+      {
+        cat: "Fractals in Movies",
+        col: "#00e5ff",
+        text: "The alien landscapes in James Cameron's Avatar (2009) were partly generated using fractal algorithms, allowing artists to create infinitely detailed floating mountains and bioluminescent forests that would be impossible to model by hand."
+      },
+      {
+        cat: "Fractals in Movies",
+        col: "#00e5ff",
+        text: "In Doctor Strange (2016), the 'Mirror Dimension' scenes were designed by repeatedly applying fractal transformations to city geometry, producing the visually infinite folding architecture that makes buildings fold like origami into other buildings."
+      },
+      {
+        cat: "Fractals in Movies",
+        col: "#00e5ff",
+        text: "The tentacles of Davy Jones in Pirates of the Caribbean: Dead Man's Chest (2006) were animated using fractal branching algorithms, giving each sucker and tendril its own convincing sub-movement — a technical achievement that earned the film an Oscar for VFX."
+      },
+      {
+        cat: "Fractals in Movies",
+        col: "#00e5ff",
+        text: "The fire and smoke in many blockbuster films are simulated using fluid dynamics equations that produce fractal-like turbulence. Disney's Encanto (2021) used millions of mathematical particles to animate every candle flame frame by frame."
+      },
+
+      // ─── Golden Ratio ───
+      {
+        cat: "Golden Ratio",
+        col: "#d4af37",
+        text: "The Golden Ratio (φ ≈ 1.6180339...) is an irrational number — its decimal expansion never repeats and never ends. It appears when you divide a line so that the ratio of the whole to the longer part equals the ratio of the longer part to the shorter."
+      },
+      {
+        cat: "Golden Ratio",
+        col: "#d4af37",
+        text: "The nautilus shell grows in a logarithmic spiral identical to the Golden Spiral. The same pattern appears in hurricanes viewed from space, spiral galaxies, the arrangement of seeds in a sunflower, and the curl of a breaking ocean wave."
+      },
+      {
+        cat: "Golden Ratio",
+        col: "#d4af37",
+        text: "Leonardo da Vinci's Vitruvian Man illustrates the Golden Ratio throughout the human body. The distance from the navel to the floor divided by total height equals approximately 0.618 — which is exactly 1 ÷ φ, the reciprocal of the Golden Ratio."
+      },
+      {
+        cat: "Golden Ratio",
+        col: "#d4af37",
+        text: "Twitter, Apple, and Google all use the Golden Ratio in their logo designs. Apple's bitten apple logo fits almost perfectly inside a Golden Rectangle — a rectangle whose sides are in the ratio 1 : φ, considered the most aesthetically pleasing rectangle shape."
+      },
+      {
+        cat: "Golden Ratio",
+        col: "#d4af37",
+        text: "The Greek Parthenon, built in 447 BC, contains the Golden Ratio in its proportions. The ratio of its width to its height, as well as many internal column spacings, equal φ — suggesting ancient architects understood the mathematics of beauty."
+      },
+      {
+        cat: "Golden Ratio",
+        col: "#d4af37",
+        text: "φ is the 'most irrational' number that exists. Because its continued fraction representation is [1; 1, 1, 1, 1, ...] — all ones — it is the hardest number to approximate with simple fractions. This is precisely why it appears in nature: it produces the most efficient packing of seeds and petals."
+      },
+
+      // ─── Fibonacci Sequence ───
+      {
+        cat: "Fibonacci Sequence",
+        col: "#f0cf6e",
+        text: "The Fibonacci sequence (1, 1, 2, 3, 5, 8, 13, 21, 34, 55...) was introduced to Europe by Leonardo of Pisa (nicknamed Fibonacci) in his 1202 book 'Liber Abaci', in a problem about how fast rabbit populations grow."
+      },
+      {
+        cat: "Fibonacci Sequence",
+        col: "#f0cf6e",
+        text: "Dividing any Fibonacci number by the previous one (e.g. 89 ÷ 55 = 1.6181...) always produces a result closer and closer to the Golden Ratio (φ ≈ 1.6180339...). As the numbers grow larger, the approximation becomes more and more precise."
+      },
+      {
+        cat: "Fibonacci Sequence",
+        col: "#f0cf6e",
+        text: "A typical sunflower has 34 clockwise spirals and 55 counter-clockwise spirals in its seed head — both consecutive Fibonacci numbers. This arrangement lets seeds pack as tightly as possible with no wasted space."
+      },
+      {
+        cat: "Fibonacci Sequence",
+        col: "#f0cf6e",
+        text: "The musical octave has 13 notes total, 8 white keys and 5 black keys (split into groups of 3 and 2). The numbers 2, 3, 5, 8, and 13 are all consecutive Fibonacci numbers — hinting at a deep connection between music and mathematics."
+      },
+      {
+        cat: "Fibonacci Sequence",
+        col: "#f0cf6e",
+        text: "Fibonacci numbers appear in the branching of trees: a single trunk splits into 2 branches, each splits into 3, then 5, then 8 — following the sequence. Trees evolved this pattern to maximise sunlight capture while minimising branch weight."
+      },
+
+      // ─── Mathematics in Cinema ───
+      {
+        cat: "Mathematics in Cinema",
+        col: "#7b2fff",
+        text: "Stanley Kubrick used the Golden Ratio to compose key shots in 2001: A Space Odyssey (1968). The ratio of screen width to the position of major subjects in pivotal scenes often falls exactly at 1 ÷ φ from the edge of the frame."
+      },
+      {
+        cat: "Mathematics in Cinema",
+        col: "#7b2fff",
+        text: "The 'Rule of Thirds' — dividing the camera frame into a 3×3 grid and placing subjects at intersections — is a simplified version of the Golden Ratio grid. Every filmmaker, photographer, and painter uses it, often without knowing its mathematical origin."
+      },
+      {
+        cat: "Mathematics in Cinema",
+        col: "#7b2fff",
+        text: "Christopher Nolan's Inception (2010) features the Penrose Staircase — a paradoxical infinite staircase proven mathematically impossible in three-dimensional space by mathematician Roger Penrose in 1958. Nolan used forced perspective to make it appear real on screen."
+      },
+      {
+        cat: "Mathematics in Cinema",
+        col: "#7b2fff",
+        text: "IMAX cameras capture an image area 10 times larger than standard 35mm film. The 1.43:1 aspect ratio used in IMAX was mathematically optimised to match the horizontal span of human peripheral vision, creating the sensation of total immersion."
+      },
+      {
+        cat: "Mathematics in Cinema",
+        col: "#7b2fff",
+        text: "The film '21' (2008) is based on the true story of MIT students who used probability theory and combinatorics — advanced branches of mathematics — to legally win millions of dollars from Las Vegas casinos by counting cards at blackjack."
+      },
+
+      // ─── CGI & Visual Effects ───
+      {
+        cat: "CGI & Visual Effects",
+        col: "#ff6b6b",
+        text: "Pixar's RenderMan software — which has won an Academy Award — uses Monte Carlo integration, a technique that randomly samples millions of light paths, to calculate physically accurate shadows, reflections, and colours in each individual frame."
+      },
+      {
+        cat: "CGI & Visual Effects",
+        col: "#ff6b6b",
+        text: "The water simulation in Interstellar (2014) required physicists at Caltech to derive new fluid dynamics equations describing waves on a planet with extreme gravity. The resulting tidal waves are accurate to within a few percent of real physics."
+      },
+      {
+        cat: "CGI & Visual Effects",
+        col: "#ff6b6b",
+        text: "To render the translucent appearance of Gollum's skin in The Lord of the Rings trilogy, WETA Digital used subsurface scattering equations — the same mathematics used to model how light penetrates wax, marble, peach skin, and human flesh."
+      },
+      {
+        cat: "CGI & Visual Effects",
+        col: "#ff6b6b",
+        text: "The hair simulation in Brave (2012) required 1,500 individual curls obeying real spring-and-mass physics equations. Each curl interacted with every other curl. The computation required new mathematical solvers and took months to develop."
+      },
+      {
+        cat: "CGI & Visual Effects",
+        col: "#ff6b6b",
+        text: "Thanos's 'snap' in Avengers: Infinity War (2018) required a dust simulation where each disintegrating particle obeyed fluid dynamics equations. The VFX team ran the simulation on supercomputers, producing data equivalent to thousands of hours of HD video."
+      },
+
+      // ─── Mathematics in VFX ───
+      {
+        cat: "Mathematics in VFX",
+        col: "#ff9f43",
+        text: "Fourier transforms — a mathematical tool that decomposes any wave into simple sine waves — are used in every film ever digitally edited. Sound mixing, image compression, noise removal, and colour correction all rely on Fourier mathematics."
+      },
+      {
+        cat: "Mathematics in VFX",
+        col: "#ff9f43",
+        text: "Motion capture — used for characters like Gollum, Thanos, and Caesar in Planet of the Apes — works by solving thousands of simultaneous equations per second to map actor movements onto a 3D skeleton and then onto a digital creature."
+      },
+      {
+        cat: "Mathematics in VFX",
+        col: "#ff9f43",
+        text: "Digital cameras in filmmaking do not record colour directly. They use a Bayer matrix — a mathematical colour-filter array invented by engineer Bryce Bayer in 1974 — which estimates colour using interpolation algorithms applied to every single pixel."
+      },
+
+      // ─── Space & Astronomy ───
+      {
+        cat: "Space & Astronomy",
+        col: "#a8e6cf",
+        text: "Spiral galaxies — including the Milky Way — grow their arms in a logarithmic spiral mathematically identical to the Golden Spiral. The arms of the Milky Way are separated by approximately 12 degrees, a ratio directly derived from φ."
+      },
+      {
+        cat: "Space & Astronomy",
+        col: "#a8e6cf",
+        text: "The Mandelbrot Set — the most famous fractal in mathematics — contains infinitely complex structure at every level of magnification. If you zoomed in forever, you would never find a smooth edge or a repeated pattern, only endless new complexity."
+      }
+    ];
+
+    /* ════════════════════════════════════════════════
+       STATE & DOM
+    ════════════════════════════════════════════════ */
+    let seen   = [];
+    let current = -1;
+    const TOTAL = FACTS.length;
+
+    const factText    = document.getElementById("factText");
+    const factTagText = document.getElementById("factTagText");
+    const factTag     = document.getElementById("factTag");
+    const factNum     = document.getElementById("factNum");
+    const factTotal   = document.getElementById("factTotal");
+    const factSeen    = document.getElementById("factSeen");
+    const progressFill= document.getElementById("progressFill");
+    const btn         = document.getElementById("discoverBtn");
+
+    factTotal.textContent = TOTAL;
+
+    function nextIndex() {
+      if (seen.length === TOTAL) seen = [];
+      let c;
+      do { c = Math.floor(Math.random() * TOTAL); } while (seen.includes(c));
+      seen.push(c);
+      return c;
+    }
+
+    function showFact() {
+      btn.disabled = true;
+
+      // Fade out
+      factText.classList.remove("in");
+      factText.classList.add("out");
+      factTag.style.opacity = "0";
+      factTag.style.transition = "opacity 0.25s";
+
+      setTimeout(() => {
+        current = nextIndex();
+        const f = FACTS[current];
+
+        factText.textContent    = f.text;
+        factTagText.textContent = f.cat;
+
+        // Tag colour
+        factTag.style.background   = f.col + "20";
+        factTag.style.borderColor  = f.col + "55";
+        factTag.style.color        = f.col;
+        factTag.querySelector(".tag-dot").style.background = f.col;
+
+        // Counters
+        factNum.textContent = seen.length;
+        factSeen.innerHTML  = `seen: <span>${seen.length}</span>`;
+
+        // Progress bar
+        const pct = (seen.length / TOTAL) * 100;
+        progressFill.style.width = pct + "%";
+
+        // Fade in
+        factText.classList.remove("out");
+        factText.classList.add("in");
+        factTag.style.opacity = "1";
+
+        btn.disabled = false;
+      }, 280);
+    }
+
+    /* ════════════════════════════════════════════════
+       CANVAS BACKGROUND — Animated Math Particles
+    ════════════════════════════════════════════════ */
+    (function () {
+      const canvas = document.getElementById("bg-canvas");
+      const ctx    = canvas.getContext("2d", { alpha: true });
+
+      let W, H, particles, spiralAngle = 0;
+      
+      // Determine particle count based on device
+      function getParticleCount() {
+        if (window.matchMedia("(max-width: 480px)").matches) return 30;
+        if (window.matchMedia("(max-width: 768px)").matches) return 40;
+        if (window.matchMedia("(max-width: 1024px)").matches) return 50;
+        return 60;
+      }
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function mkParticle() {
+        return {
+          x:  Math.random() * W,
+          y:  Math.random() * H,
+          r:  Math.random() * 1.4 + 0.3,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: -(Math.random() * 0.3 + 0.05),
+          alpha: Math.random() * 0.5 + 0.1,
+          col: Math.random() < 0.7 ? "#d4af37" :
+               Math.random() < 0.5 ? "#00e5ff" : "#7b2fff"
+        };
+      }
+
+      function init() {
+        resize();
+        particles = Array.from({length: getParticleCount()}, mkParticle);
+      }
+
+      function drawGoldenSpiral(cx, cy, scale, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = "#d4af37";
+        ctx.lineWidth   = 0.5;
+        ctx.beginPath();
+        const phi = 1.6180339887;
+        let a = 0, b = scale;
+        for (let i = 0; i < 720; i++) {
+          const angle = i * Math.PI / 180 + spiralAngle;
+          const r = b * Math.pow(phi, angle / (Math.PI * 0.5));
+          if (r > Math.max(W, H)) break;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawGrid() {
+        ctx.save();
+        ctx.strokeStyle = "rgba(212,175,55,0.04)";
+        ctx.lineWidth   = 1;
+        const step = 55;
+        for (let x = 0; x < W; x += step) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+        }
+        for (let y = 0; y < H; y += step) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        drawGrid();
+
+        // Golden spirals - draw less on small devices
+        if (W > 480) {
+          drawGoldenSpiral(W * 0.15, H * 0.15, 2, 0.07);
+          drawGoldenSpiral(W * 0.85, H * 0.8,  1.5, 0.05);
+        }
+        spiralAngle += 0.002;
+
+        // Particles
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.col;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+
+          p.x += p.vx; p.y += p.vy;
+          if (p.y < -5 || p.x < -5 || p.x > W + 5) Object.assign(p, mkParticle(), { y: H + 5, x: Math.random() * W });
+        });
+
+        requestAnimationFrame(frame);
+      }
+
+      window.addEventListener("resize", () => { 
+        resize();
+        // Adjust particles on resize if threshold crossed
+        const newCount = getParticleCount();
+        if (particles.length !== newCount) {
+          if (newCount > particles.length) {
+            particles.push(...Array.from({length: newCount - particles.length}, mkParticle));
+          } else {
+            particles = particles.slice(0, newCount);
+          }
+        }
+      });
+      init();
+      frame();
+    })();
+
+    // Auto-show first fact on load
+    window.addEventListener("load", () => setTimeout(showFact, 700));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fractal Guess Game — Mathematics & Cinema</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #04060d;
+    --bg2: #070b15;
+    --gold: #d4af37;
+    --gold2: #f0cf6e;
+    --cyan: #00e5ff;
+    --text: #e8e0cc;
+    --text-dim: #9a9080;
+    --card-bg: rgba(7,11,21,0.92);
+    --border: rgba(212,175,55,0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    /* further increase base font for bigger text */
+    font-size: 1.2rem;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── ANIMATED BG ── */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 20%, rgba(212,175,55,0.055) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 75%, rgba(0,229,255,0.04) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(4,6,13,1) 40%, #020409 100%);
+    animation: bgPulse 12s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.85; }
+    100% { opacity: 1; }
+  }
+
+  /* Fractal SVG background */
+  .fractal-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.035;
+    overflow: hidden;
+  }
+  .fractal-bg svg { width: 100%; height: 100%; }
+
+  /* Grid lines */
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+    background-image:
+      linear-gradient(rgba(212,175,55,0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,175,55,0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ── LAYOUT ── */
+  .wrapper {
+    position: relative; z-index: 1;
+    /* allow page to stretch wider on larger screens */
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    opacity: 0.85;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 40%, var(--gold2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  header h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--cyan) 0%, #7af3ff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-sub {
+    font-size: 1rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    font-weight: 400;
+  }
+  .header-rule {
+    width: 120px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px auto 0;
+  }
+
+  /* ── STAGE TRANSITIONS ── */
+  .stage { display: none; animation: stageFadeIn 0.7s cubic-bezier(.4,0,.2,1) both; }
+  .stage.active { display: block; }
+  @keyframes stageFadeIn {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LEARN SECTION ── */
+  .learn-intro {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .learn-intro p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .concept-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .concept-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .concept-card:hover { border-color: rgba(212,175,55,0.4); transform: translateY(-3px); }
+  .concept-card:hover::before { opacity: 1; }
+
+  .concept-icon {
+    font-size: 1.8rem;
+    margin-bottom: 14px;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(212,175,55,0.5));
+  }
+  .concept-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.22rem;
+    font-weight: 600;
+    color: var(--gold2);
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+  }
+  .concept-card p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .movies-section { margin-bottom: 42px; }
+
+  .movie-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .movie-card {
+    background: rgba(212,175,55,0.04);
+    border: 1px solid rgba(212,175,55,0.12);
+    border-radius: 2px;
+    padding: 18px 16px;
+    text-align: center;
+    transition: background 0.3s, border-color 0.3s;
+    cursor: default;
+  }
+  .movie-card:hover {
+    background: rgba(212,175,55,0.09);
+    border-color: rgba(212,175,55,0.35);
+  }
+  .movie-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--gold2);
+    margin-bottom: 6px;
+  }
+  .movie-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .movie-desc {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .golden-section {
+    background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(0,229,255,0.03) 100%);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 28px 30px;
+    margin-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .golden-section::after {
+    content: 'φ';
+    position: absolute;
+    right: 20px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 7rem;
+    color: var(--gold);
+    opacity: 0.04;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .golden-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--gold2);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .golden-section p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 560px;
+  }
+  .phi-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    background: rgba(212,175,55,0.12);
+    border: 1px solid rgba(212,175,55,0.3);
+    color: var(--gold2);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-top: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
+    border: none;
+    padding: 15px 40px;
+    cursor: pointer;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(212,175,55,0.2), 0 2px 12px rgba(0,0,0,0.4);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(212,175,55,0.35), 0 6px 20px rgba(0,0,0,0.5); }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.35);
+    padding: 13px 32px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s;
+  }
+  .btn-secondary:hover {
+    background: rgba(212,175,55,0.08);
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(212,175,55,0.12);
+  }
+
+  .cta-wrap { text-align: center; padding: 10px 0 20px; }
+
+  /* ── QUIZ SECTION ── */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  /* responsive tweaks */
+  @media (max-width: 600px) {
+    body { font-size: 1rem; }
+    header h1 { font-size: clamp(2rem, 8vw, 3.6rem); }
+    .btn-primary { padding: 12px 24px; }
+    .wrapper { padding: 0 12px 40px; }
+  }
+
+  @media (min-width: 1200px) {
+    .wrapper { max-width: 1400px; }
+  }
+  .quiz-progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+  }
+  .progress-bar-wrap {
+    flex: 1;
+    max-width: 320px;
+    height: 2px;
+    background: rgba(212,175,55,0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 8px var(--gold);
+  }
+  .quiz-score-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+  }
+
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 38px 36px 32px;
+    position: relative;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .question-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.6;
+  }
+  .question-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  @media (max-width: 560px) { .options-grid { grid-template-columns: 1fr; } }
+
+  .option-btn {
+    background: rgba(7,11,21,0.7);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 2px;
+    padding: 18px 20px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.97rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.22s;
+    position: relative;
+    overflow: hidden;
+    line-height: 1.45;
+  }
+  .option-btn .opt-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 5px;
+    opacity: 0.7;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: rgba(212,175,55,0.5);
+    background: rgba(212,175,55,0.07);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+  }
+  .option-btn.selected {
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.08);
+    box-shadow: 0 0 20px rgba(0,229,255,0.12), inset 0 0 0 1px rgba(0,229,255,0.2);
+    color: #fff;
+  }
+  .option-btn.selected .opt-letter { color: var(--cyan); opacity: 1; }
+  .option-btn.correct {
+    border-color: #4caf7d;
+    background: rgba(76,175,125,0.12);
+    box-shadow: 0 0 20px rgba(76,175,125,0.15);
+    color: #a5ffd0;
+  }
+  .option-btn.incorrect {
+    border-color: #e05252;
+    background: rgba(224,82,82,0.1);
+    color: #ffaaaa;
+  }
+  .option-btn:disabled { cursor: default; }
+
+  .quiz-nav { display: flex; justify-content: flex-end; gap: 14px; }
+
+  .feedback-bar {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .feedback-bar.show { opacity: 1; transform: translateY(0); }
+  .feedback-bar.correct-fb {
+    background: rgba(76,175,125,0.1);
+    border: 1px solid rgba(76,175,125,0.3);
+    color: #a5ffd0;
+  }
+  .feedback-bar.incorrect-fb {
+    background: rgba(224,82,82,0.08);
+    border: 1px solid rgba(224,82,82,0.25);
+    color: #ffaaaa;
+  }
+
+  /* ── RESULT SECTION ── */
+  .result-wrap { text-align: center; padding: 20px 0 40px; }
+
+  .result-score-display {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 32px;
+  }
+  .score-ring {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 2px solid rgba(212,175,55,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 0 60px rgba(212,175,55,0.08), inset 0 0 40px rgba(212,175,55,0.03);
+  }
+  .score-ring::before {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    background: conic-gradient(var(--gold) var(--score-pct, 0%), transparent 0%) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transition: background 1s ease;
+  }
+  .score-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.4rem;
+    font-weight: 300;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .score-denom {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    margin-top: 4px;
+  }
+
+  .result-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 300;
+    color: var(--gold2);
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .result-msg {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 36px;
+  }
+
+  .result-breakdown {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 340px;
+    margin: 0 auto 40px;
+  }
+  .breakdown-dot {
+    height: 6px;
+    border-radius: 99px;
+    background: rgba(212,175,55,0.12);
+    transition: background 0.4s;
+  }
+  .breakdown-dot.correct-dot { background: #4caf7d; box-shadow: 0 0 8px rgba(76,175,125,0.5); }
+  .breakdown-dot.incorrect-dot { background: #e05252; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    border-top: 1px solid rgba(212,175,55,0.08);
+    margin-top: 60px;
+  }
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    color: rgba(232,224,204,0.25);
+    text-transform: uppercase;
+  }
+  footer span {
+    color: var(--gold);
+    opacity: 0.5;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.15), transparent);
+    margin: 40px 0;
+  }
+
+  /* ── GLOW TEXT ── */
+  .glow-text {
+    text-shadow: 0 0 20px rgba(212,175,55,0.4);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .question-card { padding: 26px 20px 22px; }
+    .quiz-header { flex-direction: column; align-items: flex-start; }
+    .progress-bar-wrap { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grid-overlay"></div>
+<div class="fractal-bg">
+  <svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <g stroke="#d4af37" stroke-width="0.5" fill="none" opacity="0.6">
+      <!-- Sierpinski-like triangle outlines -->
+      <polygon points="500,60 200,520 800,520"/>
+      <polygon points="500,175 350,445 650,445"/>
+      <polygon points="500,290 425,370 575,370"/>
+      <polygon points="350,175 275,310 425,310"/>
+      <polygon points="650,175 575,310 725,310"/>
+      <polygon points="200,445 125,580 275,580"/>
+      <polygon points="800,445 725,580 875,580"/>
+      <polygon points="500,445 425,580 575,580"/>
+    </g>
+    <g stroke="#00e5ff" stroke-width="0.4" fill="none" opacity="0.5">
+      <!-- Spiral / phi guide lines -->
+      <rect x="50" y="50" width="250" height="155"/>
+      <rect x="50" y="50" width="155" height="96"/>
+      <path d="M205,50 Q300,50 300,146 Q300,205 205,205 Q130,205 130,146"/>
+    </g>
+  </svg>
+</div>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-eyebrow">Mathematics &amp;  Exhibition</div>
+    <h1>Fractal <em>Guess</em> Game</h1>
+    <p class="header-sub">Where Infinite Geometry Meets the Silver Screen</p>
+    <div class="header-rule"></div>
+  </header>
+
+  <!-- ───────────────────────── STAGE 1: LEARN ───────────────────────── -->
+  <section id="stage-learn" class="stage active">
+
+    <div class="learn-intro">
+      <p>Before you play, explore how the infinite beauty of fractals<br>
+      and the golden ratio have shaped cinema's most iconic visuals.</p>
+    </div>
+
+    <!-- Concepts -->
+    <div class="section-label">Core Concepts</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <span class="concept-icon">🌀</span>
+        <h3>What Are Fractals?</h3>
+        <p>Fractals are infinitely complex patterns that repeat at every scale. Nature uses them in coastlines, snowflakes, and ferns — and now cinema uses them to create impossible worlds.</p>
+      </div>
+      <div class="concept-card">
+        <span class="concept-icon">🎬</span>
+        <h3>CGI &amp; Fractal Algorithms</h3>
+        <p>Visual effects artists apply fractal mathematics to generate realistic terrain, alien landscapes, and mind-bending architecture — all procedurally generated from simple equations.</p>
+      </div>
+      <div class="concept-card">
+        <span class="concept-icon">φ</span>
+        <h3>The Golden Ratio</h3>
+        <p>φ ≈ 1.618. Cinematographers frame shots using this ratio, placing subjects and horizons along golden spirals to create compositions that feel instinctively beautiful to the human eye.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Movies -->
+    <div class="movies-section">
+      <div class="section-label">Fractals on Screen</div>
+      <div class="movie-row">
+        <div class="movie-card">
+          <div class="movie-title">Inception</div>
+          <div class="movie-year">2010</div>
+          <div class="movie-desc">Cities folding into themselves — recursive fractal geometry made cinematic.</div>
+        </div>
+        <div class="movie-card">
+          <div class="movie-title">Doctor Strange</div>
+          <div class="movie-year">2016</div>
+          <div class="movie-desc">Mirror dimensions built from Mandelbrot-inspired infinite reflections.</div>
+        </div>
+        <div class="movie-card">
+          <div class="movie-title">Interstellar</div>
+          <div class="movie-year">2014</div>
+          <div class="movie-desc">Kip Thorne's wormhole is a scientifically accurate fractal spacetime curve.</div>
+        </div>
+        <div class="movie-card">
+          <div class="movie-title">Avatar</div>
+          <div class="movie-year">2009</div>
+          <div class="movie-desc">Pandora's bioluminescent flora generated using L-system fractal branching.</div>
+        </div>
+        <div class="movie-card">
+          <div class="movie-title">Annihilation</div>
+          <div class="movie-year">2018</div>
+          <div class="movie-desc">The Shimmer refracts life itself — a metaphor of fractal self-replication.</div>
+        </div>
+        <div class="movie-card">
+          <div class="movie-title">Gravity</div>
+          <div class="movie-year">2013</div>
+          <div class="movie-desc">Orbital debris spirals follow chaotic fractal trajectories for realism.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Golden Ratio -->
+    <div class="golden-section">
+      <div class="section-label">Golden Ratio in Cinematography</div>
+      <h3>The Architect's Secret Proportion</h3>
+      <p>
+        Directors like Stanley Kubrick and Wes Anderson obsessively compose frames around φ. The golden spiral guides where your eye travels in a shot. When a character stands at a golden-ratio point, the scene feels mysteriously harmonious — even if the viewer never consciously notices.
+      </p>
+      <div class="phi-badge">φ = (1 + √5) / 2 ≈ 1.61803398875…</div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="btn-primary" onclick="startQuiz()">
+        Start the Quiz
+        <span style="font-size:1.1em">→</span>
+      </button>
+    </div>
+
+  </section><!-- /stage-learn -->
+
+  <!-- ───────────────────────── STAGE 2: QUIZ ───────────────────────── -->
+  <section id="stage-quiz" class="stage">
+
+    <div class="quiz-header">
+      <div class="quiz-progress-label" id="q-label">QUESTION 1 / 5</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width:20%"></div>
+      </div>
+      <div class="quiz-score-badge" id="score-badge">SCORE — 0</div>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <div class="question-num" id="q-num">01 / 05</div>
+      <div class="question-text" id="q-text"></div>
+    </div>
+
+    <div class="options-grid" id="options-grid"></div>
+
+    <div class="feedback-bar" id="feedback-bar"></div>
+
+    <div class="quiz-nav">
+      <button class="btn-secondary" id="next-btn" onclick="nextQuestion()" style="display:none;">
+        Next <span>→</span>
+      </button>
+    </div>
+
+  </section><!-- /stage-quiz -->
+
+  <!-- ───────────────────────── STAGE 3: RESULT ───────────────────────── -->
+  <section id="stage-result" class="stage">
+
+    <div class="result-wrap">
+
+      <div class="section-label" style="justify-content:center; margin-bottom:30px;">Final Score</div>
+
+      <div class="result-score-display">
+        <div class="score-ring" id="score-ring">
+          <div class="score-num" id="result-num">0</div>
+          <div class="score-denom">out of 5</div>
+        </div>
+      </div>
+
+      <div class="result-breakdown" id="result-breakdown"></div>
+
+      <div class="result-title" id="result-title"></div>
+      <div class="result-msg" id="result-msg"></div>
+
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="playAgain()">
+          Play Again <span>↺</span>
+        </button>
+        <button class="btn-secondary" onclick="goLearn()">
+          Review Concepts
+        </button>
+      </div>
+
+    </div>
+
+  </section><!-- /stage-result -->
+
+</div><!-- /wrapper -->
+
+<footer>
+  <p>Created for a <span>Mathematics &amp; Cinema</span> Exhibition Project</p>
+</footer>
+
+<script>
+  const QUESTIONS = [
+    {
+      text: "Which movie features fractal mirror dimensions that infinitely reflect alternate realities?",
+      options: [
+        "Inception",
+        "Doctor Strange",
+        "Annihilation",
+        "Gravity"
+      ],
+      answer: 1
+    },
+    {
+      text: "What mathematical concept describes patterns that repeat at every scale — used to generate alien landscapes in Avatar?",
+      options: [
+        "Linear Regression",
+        "Fourier Transforms",
+        "Fractals",
+        "Euclidean Geometry"
+      ],
+      answer: 2
+    },
+    {
+      text: "The Golden Ratio φ ≈ 1.618 is most commonly applied in filmmaking to:",
+      options: [
+        "Calculate CGI render times",
+        "Compose visually harmonious shot framing",
+        "Sync dialogue to soundtrack tempo",
+        "Map actor movement across a set"
+      ],
+      answer: 1
+    },
+    {
+      text: "In Interstellar (2014), what scientifically accurate fractal structure was visualised based on physicist Kip Thorne's equations?",
+      options: [
+        "A black hole accretion disc",
+        "A Mandelbrot tessellation",
+        "A wormhole through spacetime",
+        "A quantum field lattice"
+      ],
+      answer: 2
+    },
+    {
+      text: "Which iterative algorithm is commonly used by CGI artists to generate natural-looking fractal tree and plant structures in films like Avatar?",
+      options: [
+        "Perlin Noise Function",
+        "L-System (Lindenmayer System)",
+        "Monte Carlo Simulation",
+        "Bézier Curve Subdivision"
+      ],
+      answer: 1
+    }
+  ];
+
+  let currentQ = 0;
+  let score = 0;
+  let answered = false;
+  let userAnswers = [];
+
+  function showStage(id) {
+    document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startQuiz() {
+    currentQ = 0;
+    score = 0;
+    answered = false;
+    userAnswers = [];
+    showStage('stage-quiz');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = QUESTIONS[currentQ];
+    answered = false;
+
+    document.getElementById('q-label').textContent = `QUESTION ${currentQ + 1} / ${QUESTIONS.length}`;
+    document.getElementById('q-num').textContent = `0${currentQ + 1} / 0${QUESTIONS.length}`;
+    document.getElementById('q-text').textContent = q.text;
+    document.getElementById('score-badge').textContent = `SCORE — ${score}`;
+
+    const pct = ((currentQ + 1) / QUESTIONS.length) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    const letters = ['A', 'B', 'C', 'D'];
+    const grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
+      btn.onclick = () => selectAnswer(i);
+      grid.appendChild(btn);
+    });
+
+    const fb = document.getElementById('feedback-bar');
+    fb.className = 'feedback-bar';
+    fb.textContent = '';
+
+    document.getElementById('next-btn').style.display = 'none';
+  }
+
+  function selectAnswer(idx) {
+    if (answered) return;
+    answered = true;
+
+    const q = QUESTIONS[currentQ];
+    const btns = document.querySelectorAll('.option-btn');
+    const isCorrect = idx === q.answer;
+
+    if (isCorrect) score++;
+    userAnswers.push({ selected: idx, correct: q.answer });
+
+    btns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.answer) btn.classList.add('correct');
+      if (i === idx && !isCorrect) btn.classList.add('incorrect');
+      if (i === idx) btn.classList.add('selected');
+    });
+
+    const fb = document.getElementById('feedback-bar');
+    if (isCorrect) {
+      fb.textContent = '✓  Correct! Well done.';
+      fb.className = 'feedback-bar correct-fb show';
+    } else {
+      fb.textContent = `✗  The correct answer is: ${q.options[q.answer]}`;
+      fb.className = 'feedback-bar incorrect-fb show';
+    }
+
+    document.getElementById('score-badge').textContent = `SCORE — ${score}`;
+    document.getElementById('next-btn').style.display = 'inline-flex';
+  }
+
+  function nextQuestion() {
+    currentQ++;
+    if (currentQ < QUESTIONS.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    showStage('stage-result');
+
+    document.getElementById('result-num').textContent = score;
+
+    // Score ring conic gradient
+    const pct = (score / QUESTIONS.length) * 100;
+    document.getElementById('score-ring').style.setProperty('--score-pct', pct + '%');
+
+    // Breakdown dots
+    const bk = document.getElementById('result-breakdown');
+    bk.innerHTML = '';
+    userAnswers.forEach(a => {
+      const dot = document.createElement('div');
+      dot.className = 'breakdown-dot ' + (a.selected === a.correct ? 'correct-dot' : 'incorrect-dot');
+      bk.appendChild(dot);
+    });
+
+    const msgs = {
+      0: { title: "Keep Exploring", msg: "Every journey into mathematics starts with curiosity. Review the concepts and try again!" },
+      1: { title: "A Curious Mind", msg: "You're beginning to see the patterns. Revisit the learning section and give it another go." },
+      2: { title: "Pattern Seeker", msg: "You're picking up the signals. The mathematics of cinema is revealing itself to you." },
+      3: { title: "Geometric Thinker", msg: "Solid understanding! You're seeing how equations translate into stunning visuals." },
+      4: { title: "Fractal Visionary", msg: "Great! You understand how mathematics shapes cinema. Just one step from perfection." },
+      5: { title: "Master of the Infinite", msg: "Perfect score. You see the universe the way filmmakers and mathematicians do — as infinitely structured beauty." }
+    };
+
+    const m = msgs[score];
+    document.getElementById('result-title').textContent = m.title;
+    document.getElementById('result-msg').textContent = m.msg;
+  }
+
+  function playAgain() {
+    startQuiz();
+  }
+
+  function goLearn() {
+    showStage('stage-learn');
+  }
+</script>
+</body>
+</html>
