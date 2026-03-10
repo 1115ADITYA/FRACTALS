@@ -6,6 +6,8 @@
 <title>Fractals & the Golden Ratio in Hollywood</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="STYLE.CSS">
+<link rel="stylesheet" href="addon.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
@@ -25,6 +27,7 @@
     <li><a href="#hollywood">Movies</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#education">Learn</a></li>
+    <li><a href="#" id="fg-nav-btn">⬡ Generator</a></li>
   </ul>
 </nav>
 
@@ -35,7 +38,7 @@
     <path d="M300 300 Q 300 200 400 200 Q 500 200 500 300 Q 500 450 300 450 Q 100 450 100 250 Q 100 50 350 50 Q 580 50 580 300 Q 580 560 280 560 Q 20 560 20 260 Q 20 -20 320 20" stroke="url(#goldGrad)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
     <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d4af37"/><stop offset="100%" stop-color="#00e5ff"/></linearGradient></defs>
   </svg>
-  <div class="hero-content">
+  <div class="hero-content" style="margin-top: 2em;">
     <div class="hero-eyebrow">Mathematics · Cinema · Beauty</div>
     <h1><strong>Fractals</strong> &amp;<br/><em>the Golden Ratio</em><br/>in Hollywood</h1>
     <p class="hero-tagline">Where Mathematicssss Meets Movies</p>
@@ -392,12 +395,223 @@
     </div>
   </div>
 </section>
-<div id="text">
-  DO YOU KNOW?
+<div class="qrcode_Container">
+
+  <div class="qrr">
+    <div class="qrtext">
+      PLAY QUIZ !
+    </div>
+    <div class="qrimage">
+      <img class="qrlink" src="https://qr.scan.page/uploads/qr_codes/FIbc8y.svg?1773158801" alt="Here is a QR code!">
+    </div>
+  </div>
+
+  <div class="qrr">
+    <div class="qrtext">
+      DO YOU KNOW ?
+    </div>
+    <div class="qrimage">
+      <img class="qrlink" src="https://qr.scan.page/uploads/qr_codes/bKq9IM.svg?1773138323" alt="Here is a QR code!">
+    </div>
+  </div>
+  
 </div>
-<div id="qrcode">
-  <img src="https://qr.scan.page/uploads/qr_codes/bKq9IM.svg?1773138323" alt=""  id="qrr">
-</div>
+
+<!-- PASTE 3 OF 4  →  New sections inside <body>
+  Paste AFTER your closing </section> of #education
+  and BEFORE your <footer> -->
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+<!-- ══ 3D FRACTAL SECTION ══ -->
+<section id="fractal3d">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">05 — 3D Fractal Geometry</div>
+      <h2 class="section-title">Fractals in<br/><strong>Three Dimensions</strong></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="fractal3d-layout">
+
+      <div id="three-canvas-wrap" class="reveal">
+        <div class="three-controls">
+          <button class="three-ctrl-btn active" data-shape="menger">Menger Sponge</button>
+          <button class="three-ctrl-btn" data-shape="tree">Fractal Tree</button>
+          <button class="three-ctrl-btn" data-shape="tetra">Tetrahedron</button>
+        </div>
+        <div class="three-zoom-controls">
+          <button class="three-zoom-btn" id="three-zoom-in"    title="Zoom In">+</button>
+          <button class="three-zoom-btn" id="three-zoom-reset" title="Reset">⊙</button>
+          <button class="three-zoom-btn" id="three-zoom-out"   title="Zoom Out">−</button>
+        </div>
+        <canvas id="three-canvas"></canvas>
+        <div class="three-label">Drag to rotate · Scroll or +/− to zoom</div>
+      </div>
+
+      <div class="fractal3d-info reveal">
+        <p class="body-text">Three-dimensional fractals exist beyond what the eye can fully grasp. The <strong style="color:var(--gold)">Menger Sponge</strong> has infinite surface area yet zero volume — a paradox made visible. These are the mathematical cousins of the CGI environments in <em>Interstellar</em>, <em>Doctor Strange</em>, and <em>Avatar</em>.</p>
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card-icon">🧊</div>
+            <div>
+              <h4>Menger Sponge</h4>
+              <p>Start with a cube. Remove the center of each face and the very middle. Repeat infinitely. Fractal dimension ≈ 2.727 — between 2D and 3D.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">🌲</div>
+            <div>
+              <h4>Fractal Tree</h4>
+              <p>Every branch splits into smaller branches using the same angle and scale ratio. L-systems generate convincing forests for Avatar using exactly this algorithm.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">🔺</div>
+            <div>
+              <h4>Sierpiński Tetrahedron</h4>
+              <p>The 3D evolution of the triangle: replace each tetrahedron with four smaller ones. After 5 iterations, 1024 shapes become visible.</p>
+            </div>
+          </div>
+        </div>
+        <div class="dim-stat">
+          <span class="dim-badge">Hausdorff Dim: 2.727</span>
+          <span class="dim-badge">Self-Similar</span>
+          <span class="dim-badge">∞ Detail</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ GOLDEN RATIO COMPOSITION TOOL ══ -->
+<section id="composition">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">06 — Composition Tool</div>
+      <h2 class="section-title">Golden Ratio<br/><strong>Frame Analyzer</strong></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="comp-layout">
+
+      <div id="comp-canvas-wrap" class="reveal">
+        <div class="comp-canvas-toolbar">
+          <button class="comp-tool-btn" id="comp-clear">Clear</button>
+          <button class="comp-tool-btn active" id="comp-draw-mode">Draw</button>
+          <label class="comp-tool-btn" style="cursor:pointer;">
+            Upload Image
+            <input type="file" id="comp-file" accept="image/*" style="display:none">
+          </label>
+        </div>
+        <canvas id="comp-canvas" width="700" height="440"></canvas>
+      </div>
+
+      <div class="comp-sidebar reveal">
+        <div class="comp-group">
+          <div class="comp-group-title">Overlays</div>
+          <div class="comp-overlay-row">
+            <span class="comp-overlay-label">Golden Spiral</span>
+            <label class="toggle-switch"><input type="checkbox" id="ov-spiral" checked><span class="toggle-track"></span></label>
+          </div>
+          <div class="comp-overlay-row">
+            <span class="comp-overlay-label">Golden Grid</span>
+            <label class="toggle-switch"><input type="checkbox" id="ov-grid"><span class="toggle-track"></span></label>
+          </div>
+          <div class="comp-overlay-row">
+            <span class="comp-overlay-label">Rule of Thirds</span>
+            <label class="toggle-switch"><input type="checkbox" id="ov-thirds"><span class="toggle-track"></span></label>
+          </div>
+          <div class="comp-overlay-row">
+            <span class="comp-overlay-label">Fibonacci Points</span>
+            <label class="toggle-switch"><input type="checkbox" id="ov-fib"><span class="toggle-track"></span></label>
+          </div>
+          <div class="comp-overlay-row">
+            <span class="comp-overlay-label">Phi Rectangle</span>
+            <label class="toggle-switch"><input type="checkbox" id="ov-rect"><span class="toggle-track"></span></label>
+          </div>
+          <div style="margin-top:1rem">
+            <div class="fg-label">Overlay Opacity <span id="ov-opacity-val">70%</span></div>
+            <input type="range" class="fg-slider" id="ov-opacity" min="10" max="100" value="70">
+          </div>
+        </div>
+        <div class="comp-group">
+          <div class="comp-group-title">Composition Analysis</div>
+          <div class="comp-analysis" id="comp-analysis"><strong>Canvas ready.</strong><br>Draw or upload an image, then enable overlays to analyze against golden ratio principles.</div>
+        </div>
+        <button class="comp-upload-btn" id="comp-save">Save Composition → PNG</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ QUIZ + DID YOU KNOW ══ -->
+<section id="quiz">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">07 — Test Your Knowledge</div>
+      <h2 class="section-title">The Mathematics<br/><strong>Challenge</strong></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="quiz-layout">
+
+      <div class="dyk-panel reveal">
+        <div class="dyk-card">
+          <span class="dyk-tag">⚡ Did You Know</span>
+          <h4>Romanesco Broccoli is a Fractal</h4>
+          <p>Its florets follow a logarithmic spiral — each bud is made of smaller buds in the same spiral. It's literally edible mathematics.</p>
+          <span class="dyk-num">01</span>
+        </div>
+        <div class="dyk-card">
+          <span class="dyk-tag">🎬 Cinema Fact</span>
+          <h4>Kubrick's Monolith: 1 : 4 : 9</h4>
+          <p>The monolith in 2001 has dimensions in the ratio 1², 2², 3². Too elegant to be coincidence — Kubrick never confirmed it was deliberate.</p>
+          <span class="dyk-num">02</span>
+        </div>
+        <div class="dyk-card">
+          <span class="dyk-tag">🌊 Nature Fact</span>
+          <h4>Ocean Waves are Self-Similar</h4>
+          <p>A 1cm ripple and a 10m wave break using the exact same mathematical ratios. Hokusai captured this fractal truth in "The Great Wave."</p>
+          <span class="dyk-num">03</span>
+        </div>
+        <div class="dyk-card">
+          <span class="dyk-tag">🧬 Biology Fact</span>
+          <h4>Your Lungs Are Fractal</h4>
+          <p>Your airways branch fractally through ~23 generations. Unfolded, your lung surface would cover a tennis court — packed by fractal geometry.</p>
+          <span class="dyk-num">04</span>
+        </div>
+      </div>
+
+      <div class="quiz-game reveal">
+        <div class="quiz-header">
+          <div class="quiz-header-title">Fractal &amp; φ Quiz</div>
+          <div class="quiz-score-display">Score: <strong id="score-display">0</strong></div>
+        </div>
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="quiz-progress" style="width:0%"></div>
+        </div>
+        <div class="quiz-body" id="quiz-body">
+          <div class="quiz-q-num" id="quiz-q-num">Question 1 of 10</div>
+          <div class="quiz-question" id="quiz-question">Loading...</div>
+          <div class="quiz-options" id="quiz-options"></div>
+          <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>
+        <div class="quiz-end" id="quiz-end">
+          <div class="quiz-end-score" id="quiz-end-score">0/10</div>
+          <div class="quiz-end-label">Final Score</div>
+          <div class="quiz-end-msg" id="quiz-end-msg"></div>
+          <button class="quiz-restart-btn" id="quiz-restart">Try Again</button>
+        </div>
+        <div class="quiz-footer" id="quiz-footer">
+          <button class="quiz-next-btn" id="quiz-next">Next Question →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 <!-- ─── FOOTER ─── -->
 <footer>
   <div class="footer-logo">φ · Fractals &amp; Cinema</div>
@@ -414,5 +628,66 @@
 </footer>
 
 <script src="app.js"></script>
+<!-- Fractal Generator toggle button -->
+<button id="fg-toggle">🧬Fractal Generator</button>
+
+<!-- Fractal Generator sliding panel -->
+<div id="fg-panel">
+  <div class="fg-header">
+    <div>
+      <h2>Fractal Generator</h2>
+      <span>Interactive Studio</span>
+    </div>
+    <button id="fg-close">✕</button>
+  </div>
+  <div class="fg-controls">
+    <div class="fg-type-tabs">
+      <button class="fg-tab active" data-type="mandelbrot">Mandelbrot</button>
+      <button class="fg-tab" data-type="julia">Julia Set</button>
+      <button class="fg-tab" data-type="sierpinski">Sierpiński</button>
+      <button class="fg-tab" data-type="burning">Burning Ship</button>
+    </div>
+    <div class="fg-control-row">
+      <div class="fg-label">Iterations <span id="iter-val">80</span></div>
+      <input type="range" class="fg-slider" id="fg-iter" min="20" max="200" value="80">
+    </div>
+    <div class="fg-control-row" id="julia-cr-row" style="display:none">
+      <div class="fg-label">Julia CR <span id="cr-val">-0.70</span></div>
+      <input type="range" class="fg-slider" id="fg-cr" min="-200" max="200" value="-70">
+    </div>
+    <div class="fg-control-row" id="julia-ci-row" style="display:none">
+      <div class="fg-label">Julia CI <span id="ci-val">0.19</span></div>
+      <input type="range" class="fg-slider" id="fg-ci" min="-200" max="200" value="19">
+    </div>
+    <div class="fg-control-row" id="sierp-depth-row" style="display:none">
+      <div class="fg-label">Depth <span id="depth-val">6</span></div>
+      <input type="range" class="fg-slider" id="fg-depth" min="1" max="8" value="6">
+    </div>
+    <div>
+      <div class="fg-label" style="margin-bottom:8px">Color Palette</div>
+      <div class="fg-color-row">
+        <div class="fg-color-btn active" data-palette="gold"   style="background:linear-gradient(135deg,#d4af37,#f0cf6e)"></div>
+        <div class="fg-color-btn"        data-palette="cyan"   style="background:linear-gradient(135deg,#00e5ff,#0080ff)"></div>
+        <div class="fg-color-btn"        data-palette="purple" style="background:linear-gradient(135deg,#7b2fff,#e040fb)"></div>
+        <div class="fg-color-btn"        data-palette="fire"   style="background:linear-gradient(135deg,#ff4500,#ffd700)"></div>
+        <div class="fg-color-btn"        data-palette="ice"    style="background:linear-gradient(135deg,#e0f7fa,#006064)"></div>
+        <div class="fg-color-btn"        data-palette="matrix" style="background:linear-gradient(135deg,#00ff41,#003b00)"></div>
+      </div>
+    </div>
+    <div class="fg-action-row">
+      <button class="fg-btn" id="fg-render">Render</button>
+      <button class="fg-btn secondary" id="fg-download">Download</button>
+    </div>
+  </div>
+  <div id="fg-canvas-wrap">
+    <div class="fg-status" id="fg-status">Ready</div>
+    <canvas id="fg-canvas"></canvas>
+    <div id="fg-progress"></div>
+    <div class="fg-canvas-label">Click to zoom · Drag to pan</div>
+  </div>
+</div>
+
+<!-- Load the addon JS -->
+<script src="addon.js"></script>
 </body>
 </html>
