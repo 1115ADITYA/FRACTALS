@@ -12,8 +12,12 @@
   --card-bg: rgba(12,18,32,0.9);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none;}
+html{scroll-behavior:smooth; font-size:20px;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none; font-size:1rem;}
+
+/* slightly larger headings */
+.section-title{font-size:clamp(2.6rem,6vw,4.6rem);} 
+.hero h1{font-size:clamp(3.6rem,9vw,7.2rem);}
 
 /* Custom cursor */
 .cursor{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s;mix-blend-mode:difference;}
@@ -56,7 +60,7 @@ nav{position:fixed;top:0;width:100%;z-index:500;padding:1.2rem 3rem;display:flex
 
 /* ─── SECTIONS ─── */
 section{position:relative;z-index:2;}
-.section-inner{max-width:1200px;margin:0 auto;padding:6rem 3rem;}
+.section-inner{max-width:1500px;margin:0 auto;padding:6rem 3rem;}
 .section-label{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:300;line-height:1.1;margin-bottom:1.5rem;}
 .section-title strong{font-weight:700;color:var(--gold);}
@@ -69,7 +73,8 @@ section{position:relative;z-index:2;}
 
 /* ─── FRACTALS SECTION ─── */
 #fractals{background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);}
-.fractals-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem;}
+.fractals-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:flex-start;margin-top:3rem;}
+.right-column-fractals{display:flex;flex-direction:column;gap:0;align-items:center;justify-content:flex-start;}
 .fractal-canvas-box{position:relative;border-radius:4px;overflow:hidden;background:#000;aspect-ratio:1;border:1px solid rgba(212,175,55,0.2);}
 .fractal-canvas-box canvas{width:100%;height:100%;display:block;}
 .fractal-canvas-box::after{content:'Interactive Mandelbrot';position:absolute;bottom:1rem;right:1rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:2px;color:rgba(212,175,55,0.5);}
@@ -149,6 +154,23 @@ footer{background:var(--bg);border-top:1px solid rgba(212,175,55,0.1);padding:3r
 .footer-divider{width:60px;height:1px;background:rgba(212,175,55,0.2);margin:2rem auto;}
 .footer-copy{font-size:0.75rem;color:rgba(107,112,128,0.5);font-family:'DM Mono',monospace;}
 
+/* ─── QR CODES ─── */
+.qr-container{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:3rem auto;max-width:100%;padding:2rem;}
+.qr-code{width:400px;height:400px;background:white;border-radius:12px;padding:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 48px rgba(0,0,0,0.5),0 0 0 2px rgba(212,175,55,0.3);transition:box-shadow 0.3s;margin:2rem auto;}
+.qr-code:hover{box-shadow:0 16px 64px rgba(212,175,55,0.35),0 0 0 3px rgba(212,175,55,0.4);}
+.qr-code canvas{width:100%;height:100%;object-fit:contain;}
+.qr-code img{width:100%;height:100%;object-fit:contain;}
+.qr-container-footer{margin:2.5rem 0;display:flex;flex-direction:column;align-items:center;}
+.qr-container-footer .qr-code{width:320px;height:320px;}
+
+.qrcode{
+  position: relative;
+  height: auto;
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+
 @media(max-width:768px){
   .fractals-layout,.golden-layout{grid-template-columns:1fr;}
   .edu-grid{grid-template-columns:1fr;}
@@ -156,9 +178,34 @@ footer{background:var(--bg);border-top:1px solid rgba(212,175,55,0.1);padding:3r
   .phi-display{display:none;}
   .section-inner{padding:4rem 1.5rem;}
   .slide-info{left:1.5rem;bottom:1.5rem;}
+  .qr-code{width:300px;height:300px;}
+  .qr-container-footer .qr-code{width:260px;height:260px;}
+  .right-column-fractals{margin-top:2rem;}
 }
 
 #qrcode{
-  position: fixed;
-  height: 200px;
+  display:flex;
+  justify-content:center;
+  margin:3rem 0;
 }
+
+#qrr{
+  width:400px !important;
+  height:400px !important;
+  max-width:90%;
+  max-height:90%;
+  object-fit:contain;
+}
+
+/* text id styling */
+#text{
+  color:var(--gold);
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.2rem;
+  font-weight:300;
+  text-align:center;
+  margin:2rem 0 1rem;
+  letter-spacing:1px;
+}
+
+#text strong{font-weight:700;}
