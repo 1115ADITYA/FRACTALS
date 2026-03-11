@@ -10,6 +10,35 @@
 <link rel="stylesheet" href="STYLE.CSS">
 <link rel="stylesheet" href="addon.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- ══ MOVIE MODAL CSS — ADDED ══ -->
+<style>
+#movie-modal-overlay{position:fixed;inset:0;background:rgba(4,6,13,0.93);backdrop-filter:blur(16px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.4s ease;}
+#movie-modal-overlay.open{opacity:1;pointer-events:all;}
+#movie-modal{background:var(--bg3);border:1px solid rgba(212,175,55,0.2);border-radius:12px;max-width:820px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(0.88) translateY(36px);transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1);position:relative;scrollbar-width:thin;scrollbar-color:rgba(212,175,55,0.2) transparent;}
+#movie-modal::-webkit-scrollbar{width:4px;}
+#movie-modal::-webkit-scrollbar-thumb{background:rgba(212,175,55,0.2);border-radius:2px;}
+#movie-modal-overlay.open #movie-modal{transform:scale(1) translateY(0);}
+#movie-modal-banner{height:200px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:5.5rem;position:relative;overflow:hidden;}
+#movie-modal-banner-fade{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,var(--bg3) 100%);border-radius:12px 12px 0 0;}
+#movie-modal-close{position:absolute;top:14px;right:14px;z-index:10;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--text);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+#movie-modal-close:hover{background:rgba(255,255,255,0.18);}
+#movie-modal-body{padding:1.8rem 2rem 2rem;}
+#movie-modal-meta{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:3px;color:var(--gold);margin-bottom:0.4rem;}
+#movie-modal-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:0.4rem;}
+#movie-modal-genre{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;color:var(--neon);margin-bottom:1rem;}
+#movie-modal-badges{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+.movie-modal-divider{height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0.25;margin:1.2rem 0;}
+#movie-modal-desc-f,#movie-modal-desc-g{font-size:0.88rem;color:var(--muted);line-height:1.75;margin-bottom:0.8rem;}
+#movie-modal-desc-f strong,#movie-modal-desc-g strong{color:var(--text);}
+#movie-modal-trailer-wrap{width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:1px solid rgba(212,175,55,0.15);margin-bottom:1.2rem;}
+#movie-modal-trailer{width:100%;height:100%;border:none;}
+#movie-modal-imdb{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:600;transition:gap 0.2s;}
+#movie-modal-imdb:hover{gap:14px;}
+.movie-title{cursor:pointer;transition:color 0.2s;}
+.movie-title:hover{color:var(--gold);}
+@media(max-width:479px){#movie-modal-title{font-size:2rem;}#movie-modal-body{padding:1.2rem;}#movie-modal-banner{height:150px;font-size:4rem;}}
+</style>
 </head>
 <body>
 
@@ -171,11 +200,19 @@
     <div class="movies-grid">
 
       <!-- Inception -->
-      <div class="movie-card reveal">
+<div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Inception" data-year="2010" data-director="Christopher Nolan" data-icon="🌀" data-bg="linear-gradient(135deg,#0a0f20,#1a1530)" data-genre="Sci-Fi · Psychological Thriller" data-fractal="The folding city sequences use iterative geometric transformations — self-similar architectural patterns that fold infinitely into themselves." data-golden="Nolan's cinematographer Wally Pfister frames key shots using spiral composition — Dom Cobb is positioned at the golden spiral's focal point in crucial scenes." data-trailer="https://www.youtube.com/embed/YoHD9XEInc0" data-imdb="https://www.imdb.com/title/tt1375666/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#0a0f20,#1a1530);font-size:5rem;">🌀</div>
         <div class="movie-card-body">
           <div class="movie-year">2010 · Christopher Nolan</div>
-          <div class="movie-title">Inception</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Inception" data-year="2010" data-director="Christopher Nolan"
+            data-icon="🌀" data-bg="linear-gradient(135deg,#0a0f20,#1a1530)"
+            data-genre="Sci-Fi · Psychological Thriller"
+            data-fractal="The folding city sequences use iterative geometric transformations — self-similar architectural patterns that fold infinitely into themselves."
+            data-golden="Nolan's cinematographer Wally Pfister frames key shots using spiral composition — Dom Cobb is positioned at the golden spiral's focal point in crucial scenes."
+            data-trailer="https://www.youtube.com/embed/YoHD9XEInc0"
+            data-imdb="https://www.imdb.com/title/tt1375666/"
+            data-badges="fractal,golden">Inception</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Fractals:</span> The folding city sequences use iterative geometric transformations — self-similar architectural patterns that fold infinitely into themselves.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> Nolan's cinematographer Wally Pfister frames key shots using spiral composition — Dom Cobb is positioned at the golden spiral's focal point in crucial scenes.</div>
@@ -184,11 +221,19 @@
       </div>
 
       <!-- Interstellar -->
-      <div class="movie-card reveal">
+      <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Interstellar" data-year="2014" data-director="Christopher Nolan" data-icon="🕳️" data-bg="linear-gradient(135deg,#020810,#0d1a35)" data-genre="Sci-Fi · Drama" data-fractal="The Gargantua black hole was simulated using real relativistic equations — its accretion disk has fractal turbulence structures. The tesseract interior is a 4D fractal construct." data-golden="The wormhole framing and Endurance spacecraft compositions follow golden spiral geometry for visual harmony." data-trailer="https://www.youtube.com/embed/zSWdZVtXT7E" data-imdb="https://www.imdb.com/title/tt0816692/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#020810,#0d1a35);font-size:5rem;">🕳️</div>
         <div class="movie-card-body">
           <div class="movie-year">2014 · Christopher Nolan</div>
-          <div class="movie-title">Interstellar</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Interstellar" data-year="2014" data-director="Christopher Nolan"
+            data-icon="🕳️" data-bg="linear-gradient(135deg,#020810,#0d1a35)"
+            data-genre="Sci-Fi · Drama"
+            data-fractal="The Gargantua black hole was simulated using real relativistic equations — its accretion disk has fractal turbulence structures. The tesseract interior is a 4D fractal construct."
+            data-golden="The wormhole framing and Endurance spacecraft compositions follow golden spiral geometry for visual harmony."
+            data-trailer="https://www.youtube.com/embed/zSWdZVtXT7E"
+            data-imdb="https://www.imdb.com/title/tt0816692/"
+            data-badges="fractal,golden">Interstellar</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Fractals:</span> The Gargantua black hole was simulated using real relativistic equations — its accretion disk has fractal turbulence structures. The tesseract interior is a 4D fractal construct.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> The wormhole framing and Endurance spacecraft compositions follow golden spiral geometry for visual harmony.</div>
@@ -197,11 +242,19 @@
       </div>
 
       <!-- Avatar -->
-      <div class="movie-card reveal">
+     <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Avatar" data-year="2009" data-director="James Cameron" data-icon="🌿" data-bg="linear-gradient(135deg,#041510,#0a2a15)" data-genre="Sci-Fi · Action · Adventure" data-fractal="Pandora's entire ecosystem — the Hometree, bioluminescent plants, floating Hallelujah Mountains — was built using fractal L-system algorithms that generate self-similar branching patterns." data-golden="The Tree of Souls and wide landscape shots are composed using golden rectangle framing, placing Na'vi figures at phi-ratio focal points." data-trailer="https://www.youtube.com/embed/5PSNL1qE6VY" data-imdb="https://www.imdb.com/title/tt0499549/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#041510,#0a2a15);font-size:5rem;">🌿</div>
         <div class="movie-card-body">
           <div class="movie-year">2009 · James Cameron</div>
-          <div class="movie-title">Avatar</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Avatar" data-year="2009" data-director="James Cameron"
+            data-icon="🌿" data-bg="linear-gradient(135deg,#041510,#0a2a15)"
+            data-genre="Sci-Fi · Action · Adventure"
+            data-fractal="Pandora's entire ecosystem — the Hometree, bioluminescent plants, floating Hallelujah Mountains — was built using fractal L-system algorithms that generate self-similar branching patterns."
+            data-golden="The Tree of Souls and wide landscape shots are composed using golden rectangle framing, placing Na'vi figures at phi-ratio focal points."
+            data-trailer="https://www.youtube.com/embed/5PSNL1qE6VY"
+            data-imdb="https://www.imdb.com/title/tt0499549/"
+            data-badges="fractal,golden">Avatar</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Fractals:</span> Pandora's entire ecosystem — the Hometree, bioluminescent plants, floating Hallelujah Mountains — was built using fractal L-system algorithms that generate self-similar branching patterns.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> The Tree of Souls and wide landscape shots are composed using golden rectangle framing, placing Na'vi figures at phi-ratio focal points.</div>
@@ -210,11 +263,19 @@
       </div>
 
       <!-- Doctor Strange -->
-      <div class="movie-card reveal">
+     <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Doctor Strange" data-year="2016" data-director="Scott Derrickson" data-icon="✨" data-bg="linear-gradient(135deg,#100520,#2a0a40)" data-genre="Superhero · Fantasy" data-fractal="The 'Magic Trip' sequence where Strange first enters the Astral Plane uses recursive, infinitely zooming fractal geometry. Buildings fold into Sierpiński-triangle-like patterns. VFX team at ILM explicitly referenced Mandelbrot sets." data-golden="Kaleidoscopic mirror dimensions use fractal symmetry groups — the same pattern repeated at every scale of the visual." data-trailer="https://www.youtube.com/embed/HSzx-zryEgM" data-imdb="https://www.imdb.com/title/tt1211837/" data-badges="fractal" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#100520,#2a0a40);font-size:5rem;">✨</div>
         <div class="movie-card-body">
           <div class="movie-year">2016 · Scott Derrickson</div>
-          <div class="movie-title">Doctor Strange</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Doctor Strange" data-year="2016" data-director="Scott Derrickson"
+            data-icon="✨" data-bg="linear-gradient(135deg,#100520,#2a0a40)"
+            data-genre="Superhero · Fantasy"
+            data-fractal="The 'Magic Trip' sequence where Strange first enters the Astral Plane uses recursive, infinitely zooming fractal geometry. Buildings fold into Sierpiński-triangle-like patterns. VFX team at ILM explicitly referenced Mandelbrot sets."
+            data-golden="Kaleidoscopic mirror dimensions use fractal symmetry groups — the same pattern repeated at every scale of the visual."
+            data-trailer="https://www.youtube.com/embed/HSzx-zryEgM"
+            data-imdb="https://www.imdb.com/title/tt1211837/"
+            data-badges="fractal">Doctor Strange</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span></div>
           <div class="movie-detail"><span>Fractals:</span> The "Magic Trip" sequence where Strange first enters the Astral Plane uses recursive, infinitely zooming fractal geometry. Buildings fold into Sierpiński-triangle-like patterns. VFX team at ILM explicitly referenced Mandelbrot sets.</div>
           <div class="movie-detail"><span>Visual:</span> Kaleidoscopic mirror dimensions use fractal symmetry groups — the same pattern repeated at every scale of the visual.</div>
@@ -223,11 +284,19 @@
       </div>
 
       <!-- 2001: A Space Odyssey -->
-      <div class="movie-card reveal">
+    <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="2001: A Space Odyssey" data-year="1968" data-director="Stanley Kubrick" data-icon="🔭" data-bg="linear-gradient(135deg,#080510,#1a1030)" data-genre="Sci-Fi · Mystery" data-fractal="The Stargate sequence — created by Douglas Trumbull — generates slit-scan fractal light patterns decades before fractal mathematics was formally named." data-golden="Kubrick obsessively used golden ratio proportions. The HAL 9000 eye, the monolith's dimensions (1:4:9), and one-point perspective shots all use phi-based spacing." data-trailer="https://www.youtube.com/embed/oR_e9y-bka0" data-imdb="https://www.imdb.com/title/tt0062622/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#080510,#1a1030);font-size:5rem;">🔭</div>
         <div class="movie-card-body">
           <div class="movie-year">1968 · Stanley Kubrick</div>
-          <div class="movie-title">2001: A Space Odyssey</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="2001: A Space Odyssey" data-year="1968" data-director="Stanley Kubrick"
+            data-icon="🔭" data-bg="linear-gradient(135deg,#080510,#1a1030)"
+            data-genre="Sci-Fi · Mystery"
+            data-fractal="The Stargate sequence — created by Douglas Trumbull — generates slit-scan fractal light patterns decades before fractal mathematics was formally named."
+            data-golden="Kubrick obsessively used golden ratio proportions. The HAL 9000 eye, the monolith's dimensions (1:4:9), and one-point perspective shots all use phi-based spacing."
+            data-trailer="https://www.youtube.com/embed/oR_e9y-bka0"
+            data-imdb="https://www.imdb.com/title/tt0062622/"
+            data-badges="fractal,golden">2001: A Space Odyssey</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Fractals:</span> The Stargate sequence — created by Douglas Trumbull — generates slit-scan fractal light patterns decades before fractal mathematics was formally named.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> Kubrick obsessively used golden ratio proportions. The HAL 9000 eye, the monolith's dimensions (1:4:9), and one-point perspective shots all use phi-based spacing.</div>
@@ -236,11 +305,19 @@
       </div>
 
       <!-- The Tree of Life -->
-      <div class="movie-card reveal">
+     <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="The Tree of Life" data-year="2011" data-director="Terrence Malick" data-icon="🌳" data-bg="linear-gradient(135deg,#0a0800,#201500)" data-genre="Drama · Experimental" data-fractal="The cosmic creation sequence shows nebulae, microscopic cell division, and geological formations — all following the same fractal branching laws. The universe, ocean, and organism are shown as one self-similar pattern." data-golden="Emmanuel Lubezki's cinematography frames humans in landscapes using divine proportions — a visual language of cosmic balance." data-trailer="https://www.youtube.com/embed/RrAz1YLh8nY" data-imdb="https://www.imdb.com/title/tt0478304/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#0a0800,#201500);font-size:5rem;">🌳</div>
         <div class="movie-card-body">
           <div class="movie-year">2011 · Terrence Malick</div>
-          <div class="movie-title">The Tree of Life</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="The Tree of Life" data-year="2011" data-director="Terrence Malick"
+            data-icon="🌳" data-bg="linear-gradient(135deg,#0a0800,#201500)"
+            data-genre="Drama · Experimental"
+            data-fractal="The cosmic creation sequence shows nebulae, microscopic cell division, and geological formations — all following the same fractal branching laws. The universe, ocean, and organism are shown as one self-similar pattern."
+            data-golden="Emmanuel Lubezki's cinematography frames humans in landscapes using divine proportions — a visual language of cosmic balance."
+            data-trailer="https://www.youtube.com/embed/RrAz1YLh8nY"
+            data-imdb="https://www.imdb.com/title/tt0478304/"
+            data-badges="fractal,golden">The Tree of Life</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Fractals:</span> The cosmic creation sequence shows nebulae, microscopic cell division, and geological formations — all following the same fractal branching laws. The universe, ocean, and organism are shown as one self-similar pattern.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> Emmanuel Lubezki's cinematography frames humans in landscapes using divine proportions — a visual language of cosmic balance.</div>
@@ -249,11 +326,19 @@
       </div>
 
       <!-- Annihilation -->
-      <div class="movie-card reveal">
+      <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Annihilation" data-year="2018" data-director="Alex Garland" data-icon="🧬" data-bg="linear-gradient(135deg,#041208,#102a12)" data-genre="Sci-Fi · Horror · Mystery" data-fractal="'The Shimmer' creates mutated organisms with fractal body structures — human-plant hybrids with self-similar branching patterns. The lighthouse alien replicates itself in an infinitely recursive loop, a direct visual metaphor for fractal iteration." data-golden="VFX used procedural fractal growth algorithms to simulate biological mutation patterns throughout the film." data-trailer="https://www.youtube.com/embed/89OP78l9oF0" data-imdb="https://www.imdb.com/title/tt2798920/" data-badges="fractal" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#041208,#102a12);font-size:5rem;">🧬</div>
         <div class="movie-card-body">
           <div class="movie-year">2018 · Alex Garland</div>
-          <div class="movie-title">Annihilation</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Annihilation" data-year="2018" data-director="Alex Garland"
+            data-icon="🧬" data-bg="linear-gradient(135deg,#041208,#102a12)"
+            data-genre="Sci-Fi · Horror · Mystery"
+            data-fractal="'The Shimmer' creates mutated organisms with fractal body structures — human-plant hybrids with self-similar branching patterns. The lighthouse alien replicates itself in an infinitely recursive loop, a direct visual metaphor for fractal iteration."
+            data-golden="VFX used procedural fractal growth algorithms to simulate biological mutation patterns throughout the film."
+            data-trailer="https://www.youtube.com/embed/89OP78l9oF0"
+            data-imdb="https://www.imdb.com/title/tt2798920/"
+            data-badges="fractal">Annihilation</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span></div>
           <div class="movie-detail"><span>Fractals:</span> "The Shimmer" creates mutated organisms with fractal body structures — human-plant hybrids with self-similar branching patterns. The lighthouse alien replicates itself in an infinitely recursive loop, a direct visual metaphor for fractal iteration.</div>
           <div class="movie-detail"><span>CGI Method:</span> VFX used procedural fractal growth algorithms to simulate biological mutation patterns.</div>
@@ -262,11 +347,19 @@
       </div>
 
       <!-- Pi (1998) -->
-      <div class="movie-card reveal">
+    <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Pi (π)" data-year="1998" data-director="Darren Aronofsky" data-icon="π" data-bg="linear-gradient(135deg,#0d0d0d,#1a1a1a)" data-genre="Psychological Thriller · Math" data-fractal="A mathematician discovers a 216-digit number hidden in stock patterns — a direct exploration of fractal patterns in nature and the search for mathematical order in chaos." data-golden="Spirals and Fibonacci sequences are central plot elements. The film is built around phi and the Golden Mean as a philosophical concept." data-trailer="https://www.youtube.com/embed/jo18VIoR2xU" data-imdb="https://www.imdb.com/title/tt0138704/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#0d0d0d,#1a1a1a);font-size:5rem;">π</div>
         <div class="movie-card-body">
           <div class="movie-year">1998 · Darren Aronofsky</div>
-          <div class="movie-title">Pi (π)</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Pi (π)" data-year="1998" data-director="Darren Aronofsky"
+            data-icon="π" data-bg="linear-gradient(135deg,#0d0d0d,#1a1a1a)"
+            data-genre="Psychological Thriller · Math"
+            data-fractal="A mathematician discovers a 216-digit number hidden in stock patterns — a direct exploration of fractal patterns in nature and the search for mathematical order in chaos."
+            data-golden="Spirals and Fibonacci sequences are central plot elements. The film is built around phi and the Golden Mean as a philosophical concept."
+            data-trailer="https://www.youtube.com/embed/jo18VIoR2xU"
+            data-imdb="https://www.imdb.com/title/tt0138704/"
+            data-badges="fractal,golden">Pi (π)</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Core Theme:</span> A mathematician discovers a 216-digit number hidden in stock patterns — a direct exploration of fractal patterns in nature and the search for mathematical order in chaos.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> Spirals and Fibonacci sequences are central plot elements. The film is built around phi and the Golden Mean as a philosophical concept.</div>
@@ -275,11 +368,19 @@
       </div>
 
       <!-- Gravity -->
-      <div class="movie-card reveal">
+     <div class="movie-card reveal" onclick="openMovieModal(this)" data-title="Gravity" data-year="2013" data-director="Alfonso Cuarón" data-icon="🛸" data-bg="linear-gradient(135deg,#030510,#080d20)" data-genre="Sci-Fi · Thriller" data-fractal="The debris fields spreading from satellite collisions follow fractal dispersion patterns. Earth's clouds and oceans visible below follow fractal coastline geometry." data-golden="Cuarón and DP Lubezki's famous long takes frame Ryan Stone in a fetal position at the exact phi-ratio intersection within the 2.39:1 frame." data-trailer="https://www.youtube.com/embed/ONoQSMBfKEg" data-imdb="https://www.imdb.com/title/tt1454468/" data-badges="fractal,golden" style="cursor:pointer;">
         <div class="movie-poster-placeholder" style="background:linear-gradient(135deg,#030510,#080d20);font-size:5rem;">🛸</div>
         <div class="movie-card-body">
           <div class="movie-year">2013 · Alfonso Cuarón</div>
-          <div class="movie-title">Gravity</div>
+          <div class="movie-title" onclick="openMovieModal(this)"
+            data-title="Gravity" data-year="2013" data-director="Alfonso Cuarón"
+            data-icon="🛸" data-bg="linear-gradient(135deg,#030510,#080d20)"
+            data-genre="Sci-Fi · Thriller"
+            data-fractal="The debris fields spreading from satellite collisions follow fractal dispersion patterns. Earth's clouds and oceans visible below follow fractal coastline geometry."
+            data-golden="Cuarón and DP Lubezki's famous long takes frame Ryan Stone in a fetal position at the exact phi-ratio intersection within the 2.39:1 frame."
+            data-trailer="https://www.youtube.com/embed/OiTiKOy59o4?si=eFoqPAnEuCAfgVyJ&amp;start=7"
+            data-imdb="https://www.imdb.com/title/tt1454468/"
+            data-badges="fractal,golden">Gravity</div>
           <div class="movie-badges"><span class="badge badge-fractal">Fractals</span><span class="badge badge-golden">Golden Ratio</span></div>
           <div class="movie-detail"><span>Fractals:</span> The debris fields spreading from satellite collisions follow fractal dispersion patterns. Earth's clouds and oceans visible below follow fractal coastline geometry.</div>
           <div class="movie-detail"><span>Golden Ratio:</span> Cuarón and DP Lubezki's famous long takes frame Ryan Stone in a fetal position at the exact phi-ratio intersection within the 2.39:1 frame.</div>
@@ -402,7 +503,6 @@
     </div>
   </div>
 </section>
-
 
 <!-- PASTE 3 OF 4  →  New sections inside <body>
   Paste AFTER your closing </section> of #education
@@ -648,7 +748,7 @@
 <!-- Fractal Generator toggle button -->
 <button id="fg-toggle">🧬Fractal Generator</button>
 
-Fractal Generator sliding panel
+
 <div id="fg-panel">
   <div class="fg-header">
     <div>
@@ -707,5 +807,70 @@ Fractal Generator sliding panel
 
 <!-- Load the addon JS -->
 <script src="addon.js"></script>
+
+<!-- ══ MOVIE MODAL HTML — ADDED ══ -->
+<div id="movie-modal-overlay">
+  <div id="movie-modal">
+    <button id="movie-modal-close">✕</button>
+    <div id="movie-modal-banner">
+      <span id="movie-modal-icon" style="position:relative;z-index:1;"></span>
+      <div id="movie-modal-banner-fade"></div>
+    </div>
+    <div id="movie-modal-body">
+      <div id="movie-modal-meta"></div>
+      <div id="movie-modal-title"></div>
+      <div id="movie-modal-genre"></div>
+      <div id="movie-modal-badges"></div>
+      <div class="movie-modal-divider"></div>
+      <div id="movie-modal-desc-f"></div>
+      <div id="movie-modal-desc-g"></div>
+      <div class="movie-modal-divider"></div>
+      <div id="movie-modal-trailer-wrap">
+        <iframe id="movie-modal-trailer" allowfullscreen></iframe>
+      </div>
+      <a id="movie-modal-imdb" href="#" target="_blank">IMDB →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MOVIE MODAL JS — ADDED ══ -->
+<script>
+function openMovieModal(el) {
+  var d = el.dataset;
+  var overlay = document.getElementById('movie-modal-overlay');
+  document.getElementById('movie-modal-banner').style.background = d.bg;
+  document.getElementById('movie-modal-icon').textContent = d.icon;
+  document.getElementById('movie-modal-meta').textContent = d.year + ' · ' + d.director;
+  document.getElementById('movie-modal-title').textContent = d.title;
+  document.getElementById('movie-modal-genre').textContent = d.genre;
+  var badgesEl = document.getElementById('movie-modal-badges');
+  badgesEl.innerHTML = '';
+  if (d.badges.indexOf('fractal') !== -1) badgesEl.innerHTML += '<span class="badge badge-fractal">Fractals</span>';
+  if (d.badges.indexOf('golden') !== -1) badgesEl.innerHTML += '<span class="badge badge-golden">Golden Ratio</span>';
+  var fEl = document.getElementById('movie-modal-desc-f');
+  var gEl = document.getElementById('movie-modal-desc-g');
+  fEl.innerHTML = d.fractal ? '<strong>Fractals:</strong> ' + d.fractal : '';
+  gEl.innerHTML = d.golden ? '<strong>Golden Ratio:</strong> ' + d.golden : '';
+  document.getElementById('movie-modal-trailer').src = d.trailer;
+  document.getElementById('movie-modal-imdb').href = d.imdb;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMovieModal() {
+  document.getElementById('movie-modal-overlay').classList.remove('open');
+  document.getElementById('movie-modal-trailer').src = '';
+  document.body.style.overflow = '';
+}
+
+document.getElementById('movie-modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeMovieModal();
+});
+document.getElementById('movie-modal-close').addEventListener('click', closeMovieModal);
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeMovieModal();
+});
+</script>
+
 </body>
 </html>
