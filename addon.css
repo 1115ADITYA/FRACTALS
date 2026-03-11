@@ -1,0 +1,501 @@
+/* ═══════════════════════════════════════════════════════
+   ADDON.CSS - Fractal Generator & Additional Styles
+═══════════════════════════════════════════════════════ */
+
+/* ─── FRACTAL GENERATOR PANEL ─── */
+#fg-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  height: 100vh;
+  background: linear-gradient(135deg, rgba(7,11,21,0.98) 0%, rgba(12,18,32,0.98) 100%);
+  border-left: 1px solid rgba(212,175,55,0.2);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.77,0,0.18,1), box-shadow 0.3s;
+  z-index: 450;
+  overflow-y: auto;
+  box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+}
+
+#fg-panel.open {
+  transform: translateX(0);
+  box-shadow: -20px 0 80px rgba(212,175,55,0.15);
+}
+
+.fg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(212,175,55,0.1);
+  position: sticky;
+  top: 0;
+  background: rgba(12,18,32,0.95);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.fg-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin: 0 0 0.2rem 0;
+  letter-spacing: 2px;
+}
+
+.fg-header span {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+#fg-close {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+#fg-close:hover {
+  color: var(--gold2);
+  transform: scale(1.1);
+}
+
+.fg-controls {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* ─── TYPE TABS ─── */
+.fg-type-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.fg-tab {
+  padding: 0.7rem 0.8rem;
+  background: rgba(212,175,55,0.05);
+  border: 1px solid rgba(212,175,55,0.15);
+  border-radius: 3px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.fg-tab:hover {
+  border-color: rgba(212,175,55,0.3);
+  color: var(--gold);
+}
+
+.fg-tab.active {
+  background: rgba(212,175,55,0.2);
+  border-color: rgba(212,175,55,0.4);
+  color: var(--gold);
+}
+
+/* ─── CONTROL ROWS ─── */
+.fg-control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  padding: 0.8rem;
+  background: rgba(212,175,55,0.04);
+  border-radius: 3px;
+  border: 1px solid rgba(212,175,55,0.1);
+}
+
+.fg-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--gold);
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fg-label span {
+  color: var(--text);
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+
+.fg-slider {
+  flex: 1;
+  height: 4px;
+  background: rgba(212,175,55,0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.fg-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.fg-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+
+.fg-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: box-shadow 0.2s;
+}
+
+.fg-slider::-moz-range-thumb:hover {
+  box-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+
+/* ─── COLOR BUTTONS ─── */
+.fg-color-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.fg-color-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.fg-color-btn:hover {
+  border-color: rgba(212,175,55,0.4);
+  transform: scale(1.05);
+}
+
+.fg-color-btn.active {
+  border-color: rgba(212,175,55,0.8);
+  box-shadow: 0 0 20px rgba(212,175,55,0.3), inset 0 0 20px rgba(212,175,55,0.1);
+}
+
+/* ─── ACTION ROW ─── */
+.fg-action-row {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.fg-btn {
+  flex: 1;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.08));
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 3px;
+  color: var(--gold);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.fg-btn:hover {
+  background: linear-gradient(135deg, rgba(212,175,55,0.35), rgba(212,175,55,0.15));
+  border-color: rgba(212,175,55,0.5);
+  box-shadow: 0 8px 24px rgba(212,175,55,0.2);
+}
+
+.fg-btn:active {
+  transform: translateY(1px);
+}
+
+.fg-btn.secondary {
+  opacity: 0.8;
+}
+
+/* ─── CANVAS WRAPPER ─── */
+#fg-canvas-wrap {
+  position: relative;
+  width: auto;
+  aspect-ratio: 1;
+  background: #000;
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 1.5rem 1.5rem;
+  flex-shrink: 0;
+}
+
+#fg-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+}
+
+#fg-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--gold);
+  width: 0%;
+  transition: width 0.1s;
+  z-index: 5;
+}
+
+.fg-status {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(212,175,55,0.7);
+  letter-spacing: 1px;
+  z-index: 4;
+  background: rgba(0,0,0,0.5);
+  padding: 0.3rem 0.5rem;
+  border-radius: 2px;
+}
+
+.fg-canvas-label {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(212,175,55,0.5);
+  letter-spacing: 0.5px;
+}
+
+/* ─── TOGGLE BUTTON ─── */
+#fg-toggle {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  width: auto;
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(135deg, var(--gold3), var(--gold));
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+  z-index: 400;
+  box-shadow: 0 12px 40px rgba(212,175,55,0.3);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+#fg-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 60px rgba(212,175,55,0.4);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE DESIGN FOR ADDON.CSS
+═══════════════════════════════════════════════════════ */
+
+/* Extra Small (< 480px) */
+@media (max-width: 479px) {
+  #fg-panel {
+    width: 100%;
+    right: -100%;
+    border-left: none;
+  }
+
+  #fg-toggle {
+    right: 1rem;
+    bottom: 1.5rem;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.7rem;
+    width: auto;
+    height: auto;
+  }
+
+  #fg-canvas-wrap {
+    width: calc(100vw - 3rem);
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
+  .fg-control-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .fg-label {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .fg-slider {
+    width: 100%;
+  }
+
+  .fg-color-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .fg-type-tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fg-header {
+    padding: 1rem;
+  }
+
+  .fg-controls {
+    padding: 1rem;
+  }
+
+  .fg-color-btn {
+    width: 100%;
+  }
+}
+
+/* Small (480px - 640px) */
+@media (min-width: 480px) and (max-width: 640px) {
+  #fg-panel {
+    width: 100%;
+    right: -100%;
+  }
+
+  #fg-toggle {
+    right: 1.2rem;
+    bottom: 1.8rem;
+  }
+
+  .fg-control-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fg-label {
+    width: 100%;
+  }
+
+  .fg-slider {
+    width: 100%;
+  }
+
+  .fg-color-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #fg-canvas-wrap {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
+
+/* Medium Tablet (640px - 1024px) */
+@media (min-width: 640px) and (max-width: 1024px) {
+  #fg-panel {
+    width: 380px;
+    right: -380px;
+  }
+
+  #fg-toggle {
+    right: 1.5rem;
+    bottom: 2rem;
+  }
+
+  .fg-color-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Desktop (> 1024px) */
+@media (min-width: 1024px) {
+  #fg-panel {
+    width: 420px;
+    right: -420px;
+  }
+
+  #fg-toggle {
+    right: 2rem;
+    bottom: 2rem;
+    padding: 0.8rem 1.2rem;
+  }
+
+  .fg-color-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Touch devices - remove hover transforms */
+@media (hover: none) and (pointer: coarse) {
+  #fg-toggle:hover {
+    transform: none;
+  }
+
+  .fg-btn:hover {
+    background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.08));
+    box-shadow: none;
+  }
+
+  .fg-color-btn:hover {
+    transform: none;
+    border-color: transparent;
+  }
+}
+
+/* Landscape orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  #fg-canvas-wrap {
+    max-height: 250px;
+  }
+
+  .fg-controls {
+    padding: 0.8rem;
+  }
+
+  .fg-control-row {
+    margin-bottom: 0.8rem;
+    padding: 0.6rem;
+  }
+}
