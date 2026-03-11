@@ -1049,3 +1049,40 @@ input[type=range].fg-slider::-webkit-slider-thumb { -webkit-appearance: none; wi
   .fractal3d-layout, .comp-layout, .quiz-layout { grid-template-columns: 1fr; }
   #fg-panel { width: 100%; right: -100%; }
 }
+
+.quiz-btn-wrapper{
+  text-align:center;
+  margin-top:-30px; /* yaha value adjust karke upar la sakte ho */
+}
+
+.quiz-btn{
+  color:#C9A84C;
+  background:#000;
+  border:2px solid #C9A84C;
+  padding:10px 24px;
+  font-family:Georgia, serif;
+  font-size:20px;
+  font-weight:bold;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  text-decoration:none;
+}
+
+.facts-btn-wrapper{
+  text-align:center;
+  margin-top:-44px; /* spacing control */
+}
+
+.facts-btn{
+  color:#C9A84C;
+  background-color:#000000;
+  border:2px solid #C9A84C;
+  display:inline-block;
+  padding:10px 24px;
+  font-family:Georgia, serif;
+  font-size:20px;
+  font-weight:bold;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  text-decoration:none;
+}
